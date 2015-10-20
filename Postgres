@@ -1,0 +1,3 @@
+create table evento(cod_evento numeric primary key, nom_evento text, fecha_evento numeric, num_part_evento numeric, lug_evento text);
+select * from evento;
+insert into evento values(01, 'Computer Science', 101015, 50, 'Bogotá'); 
