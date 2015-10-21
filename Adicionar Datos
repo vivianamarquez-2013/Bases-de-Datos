@@ -1,0 +1,58 @@
+<html>
+<head>
+	<title>Adicionar datos</title>
+	<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+
+	<nav>
+            <ul id="menu">
+            <li><a href="insertar_datos3.php">Adicionar Eventos</a></li>
+            <li><a href="indexpg.php">Ver eventos</a></li>
+            </ul>
+            <center><a href="http://info.flagcounter.com/ElBL" target="_blank"><img src="http://s07.flagcounter.com/map/ElBL/size_t/txt_000000/border_CCCCCC/pageviews_1/viewers_0/flags_0/" alt="Flag Counter" border="0"></a></center>
+        </nav>
+<?PHP 
+/*Conexion con la base de datos*/
+header("Content-type: text/html; charset=utf8");?>
+
+<form>
+	<center><td colspan='2' align='center'><h1><font color="hotpink">Adicionar Eventos</h1></font></td></center>
+	<table align='center' width='225' cellspacing='2' cellpadding='2' border='0'>	
+</form>
+<form method='get' action='insertar_datos4.php'>
+	Código del evento:&nbsp;&nbsp;&nbsp;&nbsp;
+	<input type='text' name='cod_evento'>
+	<br><br>
+	Nombre del evento:&nbsp;&nbsp;&nbsp;&nbsp;
+	<input type='text' name='nom_evento'>
+	<br><br>
+	Fecha del evento:&nbsp;&nbsp;&nbsp;&nbsp;
+	<input type='text' name='fecha_evento'>
+	<br><br>
+	Número de participantes:&nbsp;&nbsp;&nbsp;&nbsp;
+	<input type='number' name='num_part_evento' min='1'>
+	<br><br>
+	Lugar del evento:&nbsp;&nbsp;&nbsp;&nbsp;
+	<!--  <input type='text' name='lug_evento'> -->
+	<select name='lug_evento'>
+		<option value="Bogotá">Bogotá</option>
+		<option value="Medellín">Medellín</option>
+		<option value="Calí">Calí</option>
+		<option value="Barranquilla">Barranquilla</option>
+		<option value="Miami">Miami</option>
+		<option value="Palm Beach">Palm Beach</option>
+		<option value="New York">New York</option>
+		<option value="Los Angeles">Los Angeles</option>
+		<option value="São Paulo">São Paulo</option>
+		<option value="Rio de Janeiro">Rio de Janeio</option>
+	</select>
+	<br>
+	<br>
+	<input type='submit' value='OK'>
+</form>
+<hr>
+<marquee><h3>Hello! • こんにちは！• ¡Hola! • 您好！• Olá! • 안녕하세요! • Salut! • Γειά σου!  • Ciao! • Здравствуйте! • Hallo!</h3></marquee>        
+</body>
+</html>
