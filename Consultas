@@ -1,0 +1,86 @@
+Nombre: Viviana Márquez
+
+1. ¿Cuántas materias toma cada alumno?
+
+SELECT 
+       cod_alumno, count (cod_alumno) as frequency
+FROM 
+      Asignacion
+GROUP by cod_alumno;
+
+cod_alumno	frequency
+10	3
+20	3
+30	3
+40	3
+50	3
+60	3
+
+2. ¿Cuántas materias dicta cada profesor?
+
+SELECT 
+       nom_profesor, count (nom_profesor) as frequency
+FROM 
+      Materia
+GROUP by nom_profesor;
+
+nom_profesor	frequency
+Apostol	2
+CJ Date	1
+Llinas	2
+Zill	1
+
+
+3. ¿Cúal es el costo del semestre de cada alumno?
+
+SELECT 
+       nom_alumno, sum (costo_materia)
+FROM 
+        Alumno, Materia, Asignacion
+WHERE
+        Alumno.cod_alumno=Asignacion.cod_alumno AND
+        Asignacion.cod_materia = Materia.cod_materia
+GROUP by nom_alumno;
+
+nom_alumno	Expr1001
+Yamyle	1000000
+Paola	1000000
+Claudia	1000000
+Sandra	900000
+Juan	900000
+Jose	900000
+
+4. ¿Cuánto produce cada profesor por concepto de matrículas?
+
+SELECT 
+       nom_profesor, sum (costo_materia)
+FROM 
+       Materia, Asignacion
+WHERE
+        Asignacion.cod_materia = Materia.cod_materia
+GROUP by nom_profesor;
+
+nom_profesor	Expr1001
+Apostol	2100000
+CJ Date	1200000
+Llinas	1800000
+Zill	600000
+
+5. ¿Cuál es el costo generado por cada semestre en cada una de las jornadas?
+
+SELECT 
+       sem_materia, jornada_oferta, sum (costo_materia)
+FROM 
+        Alumno, Asignacion, Materia
+WHERE
+        Alumno.cod_alumno = Asignacion.cod_alumno AND
+        Asignacion.cod_materia = Materia.cod_materia
+GROUP by sem_materia, jornada_oferta;
+
+sem_materia	jornada_oferta	Expr1002
+4	Diurna	900000
+5	Diurna	800000
+9	Diurna	1200000
+10	Nocturna	600000
+5	Nocturna	1800000
+6	Nocturna	400000
