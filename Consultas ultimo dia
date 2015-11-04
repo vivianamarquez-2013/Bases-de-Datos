@@ -1,0 +1,42 @@
+SELECT
+nom_ciudad, sum(val_factura)
+FROM
+CIUDAD, CLIENTE, FACTURA
+WHERE
+Ciudad.cod_ciudad = CLIENTE.cod_ciudad AND
+CLIENTE.cod_cliente = FACTURA.cod_cliente
+Group by nom_ciudad
+order by sum(val_factura) desc;
+
+
+Ventas x Ciudad x Vendedor
+
+SELECT
+nom_ciudad, nom_vendedor, sum(val_factura)
+FROM
+CIUDAD, CLIENTE, FACTURA, VENDEDOR
+WHERE
+CIUDAD.cod_ciudad = CLIENTE.cod_ciudad AND
+CLIENTE.cod_cliente = FACTURA.cod_cliente AND
+VENDEDOR.cod_vendedor = CLIENTE.cod_vendedor
+Group by nom_ciudad, nom_vendedor
+order by sum(val_factura) desc;
+
+
+
+Ventas x Ciudad x Vendedor x Forma de Pago
+
+
+SELECT
+nom_ciudad, nom_vendedor, nom_f_pago, sum(val_factura)
+FROM
+CIUDAD, CLIENTE, FACTURA, VENDEDOR, F_PAGO
+WHERE
+CIUDAD.cod_ciudad = CLIENTE.cod_ciudad AND
+CLIENTE.cod_cliente = FACTURA.cod_cliente AND
+VENDEDOR.cod_vendedor = CLIENTE.cod_vendedor AND
+F_PAGO.cod_f_pago = CLIENTE.cod_f_pago
+Group by nom_ciudad, nom_vendedor, nom_f_pago
+order by sum(val_factura) desc;
+
+
