@@ -125,3 +125,49 @@ WHERE
         cliente.cod_f_pago = f_pago.cod_f_pago AND
         cliente.cod_ciudad = ciudad.cod_ciudad
 GROUP BY ROLLUP (nom_ciudad, nom_f_pago);
+
+
+-----------------------------------
+
+CREATE TABLE amigos
+( cod_amigo number,
+  nom_amigo varchar2(30),
+  tel_amigo varchar2(20),
+  correo_amigo varchar2(30),
+  PRIMARY KEY (cod_amigo)
+);
+
+INSERT INTO amigos(cod_amigo, nom_amigo, tel_amigo, correo_amigo)
+   VALUES(3,'Criollo',313,'c@c.com');
+
+------------------------
+
+%type
+
+DECLARE
+  nombre AMIGOS.nom_amigo%type;
+
+BEGIN
+  select nom_amigo INTO nombre
+    FROM
+      AMIGOS 
+    WHERE 
+      cod_amigo=1;
+  dbms_output.put_line(nombre);
+END;
+
+
+%rowtype
+
+DECLARE
+  registro amigos%rowtype;
+
+BEGIN
+  select * into registro
+    FROM
+      AMIGOS 
+    WHERE 
+      cod_amigo=1;
+  dbms_output.put_line(registro.nom_amigo||'--'||registro.tel_amigo);
+
+END;
