@@ -1,0 +1,58 @@
+DECLARE
+  --comentario
+  variable1 number :=7;
+BEGIN
+  dbms_output.put_line('El valor de la variable1 es '||variable1);
+END;
+
+-------------------- Crea cajita
+
+DECLARE
+  --comentario
+  variable1 number :=:valor;
+BEGIN
+  dbms_output.put_line('El valor de la variable1 es '||variable1);
+END;
+
+---------------------
+DECLARE
+  x number:=:valor;
+BEGIN
+  if (x<5) then
+    dbms_output.put_line('2016');
+    dbms_output.put_line('Konrad con Doctorado');
+  end if;
+END;
+
+------------------------
+
+DECLARE
+  x number:=:valor;
+BEGIN
+  if (x<5) then
+    dbms_output.put_line('Konrad con Doctorado');
+  else
+    dbms_output.put_line('Konrad sin Doctorado');
+  end if;
+END;
+
+-----------------------
+
+DECLARE
+  x number:=7;
+BEGIN
+  if (x<7) then
+    goto proceso3;
+  elsif(x>7) then
+    goto proceso2;
+  else
+    goto proceso1;
+  end if;
+<<proceso1>>
+  dbms_output.put_line('Soy el proceso1');
+<<proceso2>>
+    dbms_output.put_line('Soy el proceso2');
+<<proceso3>>
+    dbms_output.put_line('Soy el proceso3');
+END;
+
