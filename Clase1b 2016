@@ -69,3 +69,59 @@ INSERT INTO CLIENTE (cod_cliente, nom_cliente, cod_vendedor, cod_ciudad, cod_f_p
 INSERT INTO FACTURA(cod_factura, cod_cliente, val_factura)
    VALUES(1,1,1000);
    
+***********CONSULTAS
+
+I) Ventas por vendedor
+SELECT 
+       nom_vendedor, sum (val_factura)
+FROM 
+        factura, cliente, vendedor
+WHERE
+        factura.cod_cliente=cliente.cod_cliente AND
+        cliente.cod_vendedor = vendedor.cod_vendedor
+GROUP by nom_vendedor;
+
+II) Ventas por forma de pago
+
+SELECT 
+       nom_f_pago, sum (val_factura)
+FROM 
+        factura, cliente, f_pago
+WHERE
+        factura.cod_cliente=cliente.cod_cliente AND
+        cliente.cod_f_pago = f_pago.cod_f_pago
+GROUP by nom_f_pago;
+
+III) Ventas por ciudad y por forma de pago
+
+SELECT 
+       nom_ciudad, nom_f_pago, sum (val_factura)
+FROM 
+        ciudad, factura, cliente, f_pago
+WHERE
+        factura.cod_cliente=cliente.cod_cliente AND
+        cliente.cod_f_pago = f_pago.cod_f_pago AND
+        cliente.cod_ciudad = ciudad.cod_ciudad
+GROUP by nom_ciudad, nom_f_pago;
+
+---------------------------
+
+SELECT 
+       nom_vendedor, sum (val_factura)
+FROM 
+        factura, cliente, vendedor
+WHERE
+        factura.cod_cliente=cliente.cod_cliente AND
+        cliente.cod_vendedor = vendedor.cod_vendedor
+GROUP BY ROLLUP (nom_vendedor);
+
+
+SELECT 
+       nom_ciudad, nom_f_pago, sum (val_factura)
+FROM 
+        ciudad, factura, cliente, f_pago
+WHERE
+        factura.cod_cliente=cliente.cod_cliente AND
+        cliente.cod_f_pago = f_pago.cod_f_pago AND
+        cliente.cod_ciudad = ciudad.cod_ciudad
+GROUP BY ROLLUP (nom_ciudad, nom_f_pago);
