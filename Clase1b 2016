@@ -1,0 +1,71 @@
+CREATE TABLE factura
+( cod_factura number,
+  cod_cliente number,
+  val_factura number,
+  PRIMARY KEY (cod_factura)
+);
+
+CREATE TABLE VENDEDOR
+( cod_vendedor number,
+  nom_vendedor varchar2(30),
+  PRIMARY KEY (cod_vendedor)
+);
+
+CREATE TABLE CIUDAD
+( cod_ciudad number,
+  nom_ciudad varchar2(30),
+  PRIMARY KEY (cod_ciudad)
+);
+
+CREATE TABLE F_PAGO
+( cod_f_pago number,
+  nom_f_pago varchar2(30),
+  PRIMARY KEY (cod_f_pago)
+);
+
+CREATE TABLE CLIENTE
+( cod_cliente number,
+  nom_cliente varchar2(30),
+  cod_vendedor number,
+  cod_ciudad number,
+  cod_f_pago number,
+  PRIMARY KEY (cod_cliente)
+);
+
+ALTER TABLE FACTURA
+  add CONSTRAINT cod_cliente_fk
+  FOREIGN KEY (cod_cliente)
+  REFERENCES CLIENTE(cod_cliente)
+;
+
+ALTER TABLE CLIENTE
+  add CONSTRAINT cod_vendedor_fk
+  FOREIGN KEY (cod_vendedor)
+  REFERENCES VENDEDOR(cod_vendedor)
+;
+
+ALTER TABLE CLIENTE
+  add CONSTRAINT cod_ciudad_fk
+  FOREIGN KEY (cod_ciudad)
+  REFERENCES CIUDAD(cod_ciudad)
+;
+
+ALTER TABLE CLIENTE
+  add CONSTRAINT cod_f_pago_fk
+  FOREIGN KEY (cod_f_pago)
+  REFERENCES F_PAGO(cod_f_pago)
+;
+
+ALTER TABLE F_PAGO
+  drop CONSTRAINT cod_f_pago_fk
+;
+
+INSERT INTO VENDEDOR (cod_vendedor, nom_vendedor)
+   VALUES(1,'Sandra');
+   
+INSERT INTO CLIENTE (cod_cliente, nom_cliente, cod_vendedor, cod_ciudad, cod_f_pago)
+   VALUES(1,'Juan',1,3,1);
+   
+INSERT INTO FACTURA(cod_factura, cod_cliente, val_factura)
+   VALUES(1,1,1000);
+   
