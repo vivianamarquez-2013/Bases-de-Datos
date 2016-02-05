@@ -1,0 +1,169 @@
+DECLARE
+   x number :=1;
+BEGIN
+   LOOP
+       dbms_output.put_line(x);
+       x:=x+1;
+       if(x>10) then
+           exit;
+       end if;
+    END LOOP;
+END;
+
+-*-*-*-*-
+
+DECLARE
+   x number :=10;
+BEGIN
+   LOOP
+       dbms_output.put_line(x);
+       x:=x-1;
+       if(x<1) then
+           exit;
+       end if;
+    END LOOP;
+END;
+
+-*-*-*-*-
+
+DECLARE
+   x number :=2;
+BEGIN
+   WHILE (x<51) LOOP
+       dbms_output.put_line(x);
+       x:=x+2;
+    END LOOP;
+END;
+
+-*-*-*-*-
+
+DECLARE
+   x number :=2;
+   y number :=1;
+BEGIN
+   WHILE (y<>50) LOOP
+       dbms_output.put_line(x);
+       x:=x+2;
+       y:=y+1;
+    END LOOP;
+END;
+
+-*-*-*-*-
+
+DECLARE
+   x number :=1;
+BEGIN
+   WHILE (x<=:n) LOOP
+       dbms_output.put_line(2*x);
+       x:=x+1;
+    END LOOP;
+END;
+
+-*-*-*-*-
+
+DECLARE
+   x number:=:n;
+BEGIN
+   x:=2*x+1;
+   WHILE (x>1) LOOP
+       x:=x-2;
+       dbms_output.put_line(x);
+    END LOOP;
+END;
+
+-*-*-*-*-
+
+DECLARE
+BEGIN
+   FOR CONTADOR IN REVERSE 1.. :n LOOP
+       dbms_output.put_line(2*CONTADOR);
+    END LOOP;
+END;
+
+-*-*-*-*-
+
+DECLARE
+BEGIN
+   FOR CONTADOR IN 1.. :n LOOP
+       dbms_output.put_line(2*CONTADOR-1);
+    END LOOP;
+END;
+
+-*-*-*-*-
+
+DECLARE
+   x number :=1;
+   n number :=:n;
+BEGIN
+   FOR CONTADOR IN 1.. n LOOP
+   x:=x*contador;    
+   END LOOP;
+   dbms_output.put_line('El factorial de '||n||' es '||x||'.');
+END;
+
+-*-*-*-*-
+
+BEGIN
+   FOR CONTADOR IN 1.. :n LOOP
+       FOR CONTADOR2 IN 1.. CONTADOR LOOP
+           dbms_output.put_line(CONTADOR);
+       END LOOP;   
+   END LOOP;
+END;
+
+-*-*-*-*-
+
+CREATE OR REPLACE PROCEDURE imprimir(cadena varchar)
+    IS
+    BEGIN
+        dbms_output.put_line(cadena);
+    END;
+
+---
+
+BEGIN
+   imprimir('Hola Mundito :-)');
+END;
+
+-*-*-*-*-
+
+CREATE OR REPLACE PROCEDURE sumar(n1 number, n2 number)
+    IS
+    BEGIN
+        imprimir(n1+n2);
+    END;
+
+---
+
+BEGIN
+   sumar(2,4);
+END;
+
+-*-*-*-*-
+
+CREATE OR REPLACE FUNCTION elevar2(x number)
+    RETURN NUMBER
+    IS
+    BEGIN
+        return(x*x);
+    END;
+
+---
+
+BEGIN
+   imprimir(elevar2(5));
+END;
+
+-*-*-*-*-
+
+DECLARE
+   c number;
+BEGIN
+   c:=elevar2(:n);
+   imprimir(c);
+END;
+
+-*-*-*-*-
+
+
+
