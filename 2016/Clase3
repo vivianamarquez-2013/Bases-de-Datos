@@ -1,4 +1,4 @@
----Ventas por vendedor de un vendedor dado
+-----Ventas por vendedor de un vendedor dado
 
 CREATE OR REPLACE FUNCTION FVXV(vendedor_dado number) RETURN VARCHAR IS
     nombre_vendedor VENDEDOR.nom_vendedor%type;
@@ -24,7 +24,8 @@ END;
 desc vendedor;
 
 
----Ventas por vendedor de un vendedor dado y una forma de pago dada
+
+-----Ventas por vendedor de un vendedor dado y una forma de pago dada
 
 CREATE OR REPLACE FUNCTION FVXVYFP(vendedor_dado number, f_pago_dado) RETURN VARCHAR IS
     nombre_vendedor VENDEDOR.nom_vendedor%type;
@@ -49,7 +50,8 @@ imprimir(FVXVYFP(1,1));
 END;
 
 
----Ventas por forma de pago dada
+
+-----Ventas por forma de pago dada
 
 CREATE OR REPLACE FUNCTION FVXFP(f_pago_dado number) RETURN VARCHAR IS
     forma_pago F_PAGO.nom_f_pago%type;
@@ -74,5 +76,185 @@ END;
 
 
 
+-----Ventas por vendedor
+
+CREATE OR REPLACE PROCEDURE VXV IS
+    CURSOR CURSOR_VXV IS
+        SELECT 
+            nom_vendedor nombre, sum(val_factura) total_ventas
+        FROM
+            VENDEDOR, CLIENTE, FACTURA
+        WHERE
+            VENDEDOR.cod_vendedor=CLIENTE.cod_vendedor AND
+            CLIENTE.cod_cliente=FACTURA.cod_cliente
+        GROUP BY ROLLUP (nom_vendedor);
+    REGISTRO cursor_vxv%rowtype;
+BEGIN
+     OPEN CURSOR_VXV;
+         LOOP
+             FETCH CURSOR_VXV INTO REGISTRO;
+             EXIT WHEN CURSOR_VXV%NOTFOUND;
+             imprimir(REGISTRO.nombre||' --> '||REGISTRO.total_ventas);
+         END LOOP;
+     CLOSE CURSOR_VXV;
+END;
+        
+BEGIN
+   vxv;
+END;
 
 
+
+-----Ventas por ciudad
+
+CREATE OR REPLACE PROCEDURE VXC IS
+    CURSOR CURSOR_VXC IS
+        SELECT 
+            nom_ciudad nombre, sum(val_factura) total_ventas
+        FROM
+            CIUDAD, CLIENTE, FACTURA
+        WHERE
+            CIUDAD.cod_ciudad=CLIENTE.cod_ciudad AND
+            CLIENTE.cod_cliente=FACTURA.cod_cliente
+        GROUP BY ROLLUP (nom_ciudad);
+    REGISTRO cursor_vxc%rowtype;
+BEGIN
+     OPEN CURSOR_VXC;
+         LOOP
+             FETCH CURSOR_VXC INTO REGISTRO;
+             EXIT WHEN CURSOR_VXC%NOTFOUND;
+             imprimir(REGISTRO.nombre||' --> '||REGISTRO.total_ventas);
+         END LOOP;
+     CLOSE CURSOR_VXC;
+END;
+        
+BEGIN
+   vxc;
+END;
+
+
+
+-----Ventas por forma de pago
+
+CREATE OR REPLACE PROCEDURE VXFP IS
+    CURSOR CURSOR_VXFP IS
+        SELECT 
+            nom_f_pago nombre, sum(val_factura) total_ventas
+        FROM
+            F_PAGO, CLIENTE, FACTURA
+        WHERE
+            F_PAGO.cod_f_pago=CLIENTE.cod_f_pago AND
+            CLIENTE.cod_cliente=FACTURA.cod_cliente
+        GROUP BY ROLLUP (nom_f_pago);
+    REGISTRO cursor_vxfp%rowtype;
+BEGIN
+     OPEN CURSOR_VXFP;
+         LOOP
+             FETCH CURSOR_VXFP INTO REGISTRO;
+             EXIT WHEN CURSOR_VXFP%NOTFOUND;
+             imprimir(REGISTRO.nombre||' --> '||REGISTRO.total_ventas);
+         END LOOP;
+     CLOSE CURSOR_VXFP;
+END;
+        
+BEGIN
+   vxfp;
+END;
+
+
+
+-----Ventas por cliente
+
+CREATE OR REPLACE PROCEDURE VXCL IS
+    CURSOR CURSOR_VXCL IS
+        SELECT 
+            nom_cliente nombre, sum(val_factura) total_ventas
+        FROM
+            CLIENTE, FACTURA
+        WHERE
+            CLIENTE.cod_cliente=FACTURA.cod_cliente
+        GROUP BY ROLLUP (nom_cliente);
+    REGISTRO cursor_vxcl%rowtype;
+BEGIN
+     OPEN CURSOR_VXCL;
+         LOOP
+             FETCH CURSOR_VXCL INTO REGISTRO;
+             EXIT WHEN CURSOR_VXCL%NOTFOUND;
+             imprimir(REGISTRO.nombre||' --> '||REGISTRO.total_ventas);
+         END LOOP;
+     CLOSE CURSOR_VXCL;
+END;
+        
+BEGIN
+   vxcl;
+END;
+
+
+
+-----Total
+
+CREATE OR REPLACE PROCEDURE TTT IS
+BEGIN
+     vxv;
+     vxc;
+     vxfp;
+     vxcl;
+END;
+        
+BEGIN
+   ttt;
+END;
+
+
+
+-----Ventas por vendedor while
+
+CREATE OR REPLACE PROCEDURE VXVW IS
+    CURSOR CURSOR_VXV IS
+        SELECT 
+            nom_vendedor nombre, sum(val_factura) total_ventas
+        FROM
+            VENDEDOR, CLIENTE, FACTURA
+        WHERE
+            VENDEDOR.cod_vendedor=CLIENTE.cod_vendedor AND
+            CLIENTE.cod_cliente=FACTURA.cod_cliente
+        GROUP BY ROLLUP (nom_vendedor);
+    REGISTRO cursor_vxv%rowtype;
+BEGIN
+     OPEN CURSOR_VXV;
+         FETCH CURSOR_VXV INTO REGISTRO;
+         WHILE(CURSOR_VXV%FOUND) LOOP
+             imprimir(REGISTRO.nombre||' --> '||REGISTRO.total_ventas);
+             FETCH CURSOR_VXV INTO REGISTRO;
+         END LOOP;
+     CLOSE CURSOR_VXV;
+END;
+        
+BEGIN
+   vxvw;
+END;
+
+
+
+-----Ventas por vendedor for
+
+CREATE OR REPLACE PROCEDURE VXVF IS
+    CURSOR CURSOR_VXV IS
+        SELECT 
+            nom_vendedor nombre, sum(val_factura) total_ventas
+        FROM
+            VENDEDOR, CLIENTE, FACTURA
+        WHERE
+            VENDEDOR.cod_vendedor=CLIENTE.cod_vendedor AND
+            CLIENTE.cod_cliente=FACTURA.cod_cliente
+        GROUP BY ROLLUP (nom_vendedor);
+    REGISTRO cursor_vxv%rowtype;
+BEGIN
+       FOR REGISTRO IN CURSOR_VXV LOOP
+       imprimir(REGISTRO.nombre||' --> '||REGISTRO.total_ventas);
+       END LOOP;
+END;
+        
+BEGIN
+   vxvf;
+END;
