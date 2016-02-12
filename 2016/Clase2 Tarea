@@ -1,0 +1,209 @@
+
+-------*
+3 LOOPS
+-------*
+
+DECLARE
+   x number :=1;
+   n number :=:n;
+BEGIN
+   LOOP
+       imprimir('¡Hola Profe! :)');
+       x:=x+1;
+       if(x>n) then
+           exit;
+       end if;
+    END LOOP;
+END;
+
+--•
+
+DECLARE
+   x number :=2;
+   y number :=1;
+   z number :=0;
+BEGIN
+   WHILE (y<>56) LOOP
+       imprimir(z);
+       z:=z+elevarn(x, y);
+       y:=y+1;
+    END LOOP;
+END;
+
+--•
+
+DECLARE
+   x number :=1;
+BEGIN
+   WHILE (x<=:n) LOOP
+       imprimir(factorial(x));
+       x:=x+1;
+    END LOOP;
+END;
+
+-------*
+3 WHILE
+-------*
+
+CREATE OR REPLACE FUNCTION evenfib(x number) RETURN VARCHAR IS
+       oldf number :=0;
+       newf number :=2;
+       h number :=0;
+    BEGIN
+        WHILE (oldf<x) LOOP
+        imprimir(oldf);
+        h:=newf;
+        newf:=newf+oldf;
+        oldf:=h;
+        END LOOP;
+        return(':)');
+    END;
+
+BEGIN
+imprimir(evenfib(50));
+END;
+
+--•
+
+CREATE OR REPLACE FUNCTION fib(x number) RETURN VARCHAR IS
+       oldf number :=0;
+       newf number :=1;
+       h number :=0;
+    BEGIN
+        WHILE (oldf<x) LOOP
+        imprimir(oldf);
+        h:=newf;
+        newf:=newf+oldf;
+        oldf:=h;
+        END LOOP;
+        return(':)');
+    END;
+
+BEGIN
+imprimir(fib(50));
+END;
+
+--•
+
+CREATE OR REPLACE FUNCTION fibprod(x number) RETURN VARCHAR IS
+       oldf number :=1;
+       newf number :=2;
+       h number :=1;
+    BEGIN
+        WHILE (oldf<x) LOOP
+        imprimir(oldf);
+        h:=newf;
+        newf:=newf*oldf;
+        oldf:=h;
+        END LOOP;
+        return(':)');
+    END;
+
+BEGIN
+imprimir(fibprod(5));
+END;
+
+-------*
+3 FOR
+-------*
+
+CREATE OR REPLACE FUNCTION sumatoria(x number) RETURN NUMBER IS
+       h number :=0;
+    BEGIN
+        FOR CONTADOR IN 1.. x LOOP
+        h:=h+contador;    
+        END LOOP;
+        return (h);
+    END;
+
+BEGIN
+imprimir(sumatoria(5));
+END;
+
+--•
+
+CREATE OR REPLACE FUNCTION elevarn(x number, n number) RETURN NUMBER IS
+       h number :=1;
+    BEGIN
+        FOR CONTADOR IN 1.. n LOOP
+        h:=h*x;    
+        END LOOP;
+        return (h);
+    END;
+
+BEGIN
+imprimir(elevarn(2,5));
+END;
+
+--• 
+
+CREATE OR REPLACE FUNCTION sumatoria2(x number) RETURN NUMBER IS
+       h number :=0;
+    BEGIN
+        FOR CONTADOR IN 1.. x LOOP
+        h:=h+(elevar2(contador));    
+        END LOOP;
+        return (h);
+    END;
+
+BEGIN
+imprimir(sumatoria2(5));
+END;
+
+------------*
+2 PROCEDURES
+------------*
+
+CREATE OR REPLACE PROCEDURE npr(n number, r number)
+    IS
+    BEGIN
+        imprimir(factorial(n)/(factorial(n-r)));
+    END;
+
+BEGIN
+    npr(5,2);
+END;
+    
+---•
+
+CREATE OR REPLACE PROCEDURE ncr(n number, r number)
+    IS
+    BEGIN
+        imprimir((factorial(n)/(factorial(n-r)))/(factorial(r)));
+    END;
+
+BEGIN
+    ncr(5,2);
+END;
+
+------------*
+2 FUNCTIONS
+------------*
+
+CREATE OR REPLACE FUNCTION maximo(n1 number, n2 number) RETURN number IS
+     BEGIN
+       IF n1 > n2 THEN
+         RETURN n1;
+       ELSE
+         RETURN n2;
+       END IF;
+     END;
+     
+BEGIN
+   imprimir(maximo(5,2));
+END;
+
+---•
+
+CREATE OR REPLACE FUNCTION factorial(n number) RETURN NUMBER IS
+       x number :=1;
+    BEGIN
+        FOR CONTADOR IN 1.. n LOOP
+        x:=x*contador;    
+        END LOOP;
+        return(x);
+    END;
+
+BEGIN
+   imprimir(factorial(5));
+END;
