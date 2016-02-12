@@ -1,0 +1,78 @@
+---Ventas por vendedor de un vendedor dado
+
+CREATE OR REPLACE FUNCTION FVXV(vendedor_dado number) RETURN VARCHAR IS
+    nombre_vendedor VENDEDOR.nom_vendedor%type;
+    total_ventas FACTURA.val_factura%type;
+        BEGIN
+            SELECT
+                nom_vendedor,sum(val_factura) INTO nombre_vendedor, total_ventas
+            FROM
+                VENDEDOR, CLIENTE, FACTURA
+            WHERE
+                VENDEDOR.cod_vendedor=CLIENTE.cod_vendedor AND
+                CLIENTE.cod_cliente=FACTURA.cod_cliente AND
+                VENDEDOR.cod_vendedor=vendedor_dado
+            GROUP BY nom_vendedor;
+            RETURN (nombre_vendedor||' --> '||total_ventas);
+        END;
+        
+        
+BEGIN
+imprimir(fvxv(3));
+END;
+
+desc vendedor;
+
+
+---Ventas por vendedor de un vendedor dado y una forma de pago dada
+
+CREATE OR REPLACE FUNCTION FVXVYFP(vendedor_dado number, f_pago_dado) RETURN VARCHAR IS
+    nombre_vendedor VENDEDOR.nom_vendedor%type;
+    nombre_f_pago F_PAGO.nom_f_pago%type;
+    total_ventas FACTURA.val_factura%type;
+        BEGIN
+            SELECT
+                nom_vendedor, nom_f_pago, sum(val_factura) INTO nombre_vendedor, nombre_f_pago, total_ventas
+            FROM
+                VENDEDOR, CLIENTE, FACTURA, F_PAGO
+            WHERE
+                VENDEDOR.cod_vendedor=CLIENTE.cod_vendedor AND
+                CLIENTE.cod_cliente=FACTURA.cod_cliente AND
+                VENDEDOR.cod_vendedor=vendedor_dado AND
+                
+            GROUP BY nom_vendedor, nom_f_pago;
+            RETURN (nombre_vendedor||' --> '||nombre_f_pago||' --> '||total_ventas);
+        END;
+
+BEGIN
+imprimir(FVXVYFP(1,1));
+END;
+
+
+---Ventas por forma de pago dada
+
+CREATE OR REPLACE FUNCTION FVXFP(f_pago_dado number) RETURN VARCHAR IS
+    forma_pago F_PAGO.nom_f_pago%type;
+    total_ventas FACTURA.val_factura%type;
+        BEGIN
+            SELECT
+                nom_f_pago, sum(val_factura) INTO forma_pago, total_ventas
+            FROM
+                F_PAGO, CLIENTE, FACTURA
+            WHERE
+                F_PAGO.cod_f_pago=CLIENTE.cod_f_pago AND
+                CLIENTE.cod_cliente=FACTURA.cod_cliente AND
+                F_PAGO.cod_f_pago=f_pago_dado
+            GROUP BY nom_f_pago;
+            RETURN (forma_pago||' --> '||total_ventas);
+        END;
+        
+        
+BEGIN
+imprimir(FVXFP(2));
+END;
+
+
+
+
+
