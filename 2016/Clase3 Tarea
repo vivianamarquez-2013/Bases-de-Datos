@@ -146,6 +146,69 @@ INSERT INTO FACTURA(cod_factura, cod_cliente, val_factura)
 
 
 
+-----FUNCIÓN IMPRIMIR
+
+create function imprimir(text) returns void as 
+$$ begin raise notice '%', $1; end 
+$$ language plpgsql; 
+
+SELECT imprimir('Hello mundo! :-)');
+
+-----OTRO
+
+CREATE OR REPLACE FUNCTION fnsomefunnote(param_numcount integer)
+  RETURNS integer AS
+$$
+DECLARE
+BEGIN
+    IF param_numcount > 0 THEN
+        RAISE NOTICE 'Yo there I''m number %, next: %', param_numcount, param_numcount -1;
+        RETURN fnsomefunnote(param_numcount - 1);
+    ELSE
+        RETURN param_numcount;
+    END IF;
+END;
+$$
+LANGUAGE 'plpgsql' IMMUTABLE;
+
+--
+
+CREATE OR REPLACE FUNCTION c2() RETURNS void AS $$
+DECLARE
+  r record;
+  c CURSOR FOR SELECT nom_vendedor FROM vendedor;
+BEGIN
+  FOR r IN c LOOP
+	RAISE NOTICE 'Nombre del vendedor: %', r.nom_vendedor;
+  END LOOP;
+END;
+$$ LANGUAGE plpgsql;
+SELECT * FROM c2();
+
+-----NO FUNCIONA
+
+CREATE OR REPLACE FUNCTION c3() RETURNS void AS $$
+DECLARE
+  registro record;
+  cursor_vxv CURSOR 
+  FOR SELECT  nom_vendedor, sum(val_factura)
+  FROM VENDEDOR, CLIENTE, FACTURA
+  WHERE
+      VENDEDOR.cod_vendedor=CLIENTE.cod_vendedor AND
+      CLIENTE.cod_cliente=FACTURA.cod_cliente
+  GROUP BY ROLLUP (nom_vendedor);
+BEGIN
+  OPEN CURSOR_VXV;
+         FETCH CURSOR_VXV INTO REGISTRO;
+         WHILE(CURSOR_VXV%FOUND)
+              RAISE NOTICE '% --> %', REGISTRO.nom_vendedor, REGISTRO.sum(val_facturas);
+             FETCH CURSOR_VXV INTO REGISTRO;
+         END WHILE;
+     CLOSE CURSOR_VXV;
+END;
+$$ LANGUAGE plpgsql;
+SELECT * FROM c3();
+
 -----Ventas por vendedor WHILE
 
 CREATE OR REPLACE PROCEDURE VXVW IS
