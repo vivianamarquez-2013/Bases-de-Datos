@@ -1,3 +1,151 @@
+POSTGRES
+
+
+
+CREATE TABLE factura
+( cod_factura numeric,
+  cod_cliente numeric,
+  val_factura numeric,
+  PRIMARY KEY (cod_factura)
+);
+
+CREATE TABLE VENDEDOR
+( cod_vendedor numeric,
+  nom_vendedor text,
+  PRIMARY KEY (cod_vendedor)
+);
+
+CREATE TABLE CIUDAD
+( cod_ciudad numeric,
+  nom_ciudad text,
+  PRIMARY KEY (cod_ciudad)
+);
+
+CREATE TABLE F_PAGO
+( cod_f_pago numeric,
+  nom_f_pago text,
+  PRIMARY KEY (cod_f_pago)
+);
+
+CREATE TABLE CLIENTE
+( cod_cliente numeric,
+  nom_cliente text,
+  cod_vendedor numeric,
+  cod_ciudad numeric,
+  cod_f_pago numeric,
+  PRIMARY KEY (cod_cliente)
+);
+
+ALTER TABLE FACTURA
+  add CONSTRAINT cod_cliente_fk
+  FOREIGN KEY (cod_cliente)
+  REFERENCES CLIENTE(cod_cliente)
+;
+
+ALTER TABLE CLIENTE
+  add CONSTRAINT cod_vendedor_fk
+  FOREIGN KEY (cod_vendedor)
+  REFERENCES VENDEDOR(cod_vendedor)
+;
+
+ALTER TABLE CLIENTE
+  add CONSTRAINT cod_ciudad_fk
+  FOREIGN KEY (cod_ciudad)
+  REFERENCES CIUDAD(cod_ciudad)
+;
+
+ALTER TABLE CLIENTE
+  add CONSTRAINT cod_f_pago_fk
+  FOREIGN KEY (cod_f_pago)
+  REFERENCES F_PAGO(cod_f_pago)
+;
+
+INSERT INTO VENDEDOR (cod_vendedor, nom_vendedor)
+   VALUES(1,'Sandra');
+
+INSERT INTO VENDEDOR (cod_vendedor, nom_vendedor)
+   VALUES(2,'Claudia');
+
+INSERT INTO VENDEDOR (cod_vendedor, nom_vendedor)
+   VALUES(3,'Yamyle');
+   
+INSERT INTO CIUDAD (cod_ciudad, nom_ciudad)
+   VALUES(1,'Bogotá');
+
+INSERT INTO CIUDAD (cod_ciudad, nom_ciudad)
+   VALUES(2,'Medellín');
+
+INSERT INTO CIUDAD (cod_ciudad, nom_ciudad)
+   VALUES(3,'Calí');
+   
+INSERT INTO F_PAGO (cod_f_pago, nom_f_pago)
+   VALUES(1,'Crédito');
+
+INSERT INTO F_PAGO (cod_f_pago, nom_f_pago)
+   VALUES(2,'Contado');
+
+INSERT INTO CLIENTE (cod_cliente, nom_cliente, cod_vendedor, cod_ciudad, cod_f_pago)
+   VALUES(1,'Juan',1,3,1);
+
+INSERT INTO CLIENTE (cod_cliente, nom_cliente, cod_vendedor, cod_ciudad, cod_f_pago)
+   VALUES(2,'José',2,3,2);
+
+INSERT INTO CLIENTE (cod_cliente, nom_cliente, cod_vendedor, cod_ciudad, cod_f_pago)
+   VALUES(3,'Julio',3,2,1);
+
+INSERT INTO CLIENTE (cod_cliente, nom_cliente, cod_vendedor, cod_ciudad, cod_f_pago)
+   VALUES(4,'Jaime',2,2,1);
+
+INSERT INTO CLIENTE (cod_cliente, nom_cliente, cod_vendedor, cod_ciudad, cod_f_pago)
+   VALUES(5,'Jairo',1,1,2);
+   
+INSERT INTO FACTURA(cod_factura, cod_cliente, val_factura)
+   VALUES(1,1,1000);
+
+INSERT INTO FACTURA(cod_factura, cod_cliente, val_factura)
+   VALUES(2,2,2000);
+
+INSERT INTO FACTURA(cod_factura, cod_cliente, val_factura)
+   VALUES(3,3,3000);
+
+INSERT INTO FACTURA(cod_factura, cod_cliente, val_factura)
+   VALUES(4,4,4000);
+
+INSERT INTO FACTURA(cod_factura, cod_cliente, val_factura)
+   VALUES(5,5,5000);
+
+INSERT INTO FACTURA(cod_factura, cod_cliente, val_factura)
+   VALUES(6,1,1000);
+
+INSERT INTO FACTURA(cod_factura, cod_cliente, val_factura)
+   VALUES(7,2,2000);
+
+INSERT INTO FACTURA(cod_factura, cod_cliente, val_factura)
+   VALUES(8,3,3000);
+
+INSERT INTO FACTURA(cod_factura, cod_cliente, val_factura)
+   VALUES(9,4,4000);
+
+INSERT INTO FACTURA(cod_factura, cod_cliente, val_factura)
+   VALUES(10,5,5000);
+
+INSERT INTO FACTURA(cod_factura, cod_cliente, val_factura)
+   VALUES(11,1,1000);
+
+INSERT INTO FACTURA(cod_factura, cod_cliente, val_factura)
+   VALUES(12,2,2000);
+
+INSERT INTO FACTURA(cod_factura, cod_cliente, val_factura)
+   VALUES(13,3,3000);
+
+INSERT INTO FACTURA(cod_factura, cod_cliente, val_factura)
+   VALUES(14,4,4000);
+
+INSERT INTO FACTURA(cod_factura, cod_cliente, val_factura)
+   VALUES(15,5,5000);
+
+
+
 -----Ventas por vendedor WHILE
 
 CREATE OR REPLACE PROCEDURE VXVW IS
