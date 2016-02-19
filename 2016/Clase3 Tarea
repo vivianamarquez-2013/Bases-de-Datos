@@ -236,29 +236,27 @@ SELECT VXVXFP();
 
 -----Ventas por vendedor FOR (Forma de pago dada)
 
-CREATE OR REPLACE FUNCTION VXV2(f_pago_dado) RETURNS void AS $$
+CREATE OR REPLACE FUNCTION LALALA(fpd integer) RETURNS void AS $$
 DECLARE
-  cursor_vxv2 CURSOR 
+  cursor_vxv4 CURSOR 
   IS
-  SELECT nom_vendedor nombre, sum(val_factura) total_ventas, nom_f_pago
-  FROM VENDEDOR, CLIENTE, FACTURA, F_PAGO
+  SELECT nom_vendedor nombre, nom_f_pago, sum(val_factura) total_ventas
+  FROM F_PAGO, CLIENTE, FACTURA, VENDEDOR
   WHERE
-      VENDEDOR.cod_vendedor=CLIENTE.cod_vendedor AND
-      CLIENTE.cod_cliente=FACTURA.cod_cliente AND
       F_PAGO.cod_f_pago = CLIENTE.cod_f_pago AND
-      F_PAGO.cod_f_pago=f_pago_dado
-  GROUP BY ROLLUP (nombre);
+      CLIENTE.cod_cliente = FACTURA.cod_cliente AND
+      VENDEDOR.cod_vendedor = CLIENTE.cod_vendedor AND
+      F_PAGO.cod_f_pago = fpd
+  GROUP BY nombre, nom_f_pago;
   registro RECORD;
 BEGIN
-  OPEN CURSOR_VXV2;
-         FOR REGISTRO IN CURSOR_VXV2 LOOP
+         FOR REGISTRO IN CURSOR_VXV4 LOOP
               RAISE NOTICE '% --> % --> %', REGISTRO.nom_f_pago, REGISTRO.nombre, REGISTRO.total_ventas;
          END LOOP;
-     CLOSE CURSOR_VXV2;
 END;
 $$ LANGUAGE plpgsql;
 
-SELECT VXV2();
+SELECT LALALA(2);
 
 -----Ventas por ciudad WHILE
 
