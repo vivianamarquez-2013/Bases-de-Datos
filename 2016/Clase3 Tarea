@@ -154,113 +154,134 @@ $$ language plpgsql;
 
 SELECT imprimir('Hello mundo! :-)');
 
------OTRO
+-----Ventas por vendedor WHILE
 
-CREATE OR REPLACE FUNCTION fnsomefunnote(param_numcount integer)
-  RETURNS integer AS
-$$
+CREATE OR REPLACE FUNCTION VXV() RETURNS void AS $$
 DECLARE
-BEGIN
-    IF param_numcount > 0 THEN
-        RAISE NOTICE 'Yo there I''m number %, next: %', param_numcount, param_numcount -1;
-        RETURN fnsomefunnote(param_numcount - 1);
-    ELSE
-        RETURN param_numcount;
-    END IF;
-END;
-$$
-LANGUAGE 'plpgsql' IMMUTABLE;
-
---
-
-CREATE OR REPLACE FUNCTION c2() RETURNS void AS $$
-DECLARE
-  r record;
-  c CURSOR FOR SELECT nom_vendedor FROM vendedor;
-BEGIN
-  FOR r IN c LOOP
-	RAISE NOTICE 'Nombre del vendedor: %', r.nom_vendedor;
-  END LOOP;
-END;
-$$ LANGUAGE plpgsql;
-SELECT * FROM c2();
-
------NO FUNCIONA
-
-CREATE OR REPLACE FUNCTION c3() RETURNS void AS $$
-DECLARE
-  registro record;
   cursor_vxv CURSOR 
-  FOR SELECT  nom_vendedor, sum(val_factura)
+  IS
+  SELECT nom_vendedor nombre, sum(val_factura) total_ventas
   FROM VENDEDOR, CLIENTE, FACTURA
   WHERE
       VENDEDOR.cod_vendedor=CLIENTE.cod_vendedor AND
       CLIENTE.cod_cliente=FACTURA.cod_cliente
-  GROUP BY ROLLUP (nom_vendedor);
+  GROUP BY ROLLUP (nombre);
+  registro RECORD;
 BEGIN
   OPEN CURSOR_VXV;
          FETCH CURSOR_VXV INTO REGISTRO;
-         WHILE(CURSOR_VXV%FOUND)
-              RAISE NOTICE '% --> %', REGISTRO.nom_vendedor, REGISTRO.sum(val_facturas);
-             FETCH CURSOR_VXV INTO REGISTRO;
-         END WHILE;
+         WHILE registro NOTNULL LOOP
+              RAISE NOTICE '% --> %', REGISTRO.nombre, REGISTRO.total_ventas;
+              FETCH CURSOR_VXV INTO REGISTRO;
+         END LOOP;
      CLOSE CURSOR_VXV;
 END;
 $$ LANGUAGE plpgsql;
-SELECT * FROM c3();
 
------Ventas por vendedor WHILE
-
-CREATE OR REPLACE PROCEDURE VXVW IS
-    CURSOR CURSOR_VXV IS
-        SELECT 
-            nom_vendedor nombre, sum(val_factura) total_ventas
-        FROM
-            VENDEDOR, CLIENTE, FACTURA
-        WHERE
-            VENDEDOR.cod_vendedor=CLIENTE.cod_vendedor AND
-            CLIENTE.cod_cliente=FACTURA.cod_cliente
-        GROUP BY ROLLUP (nom_vendedor);
-    REGISTRO cursor_vxv%rowtype;
-BEGIN
-     OPEN CURSOR_VXV;
-         FETCH CURSOR_VXV INTO REGISTRO;
-         WHILE(CURSOR_VXV%FOUND) LOOP
-             imprimir(REGISTRO.nombre||' --> '||REGISTRO.total_ventas);
-             FETCH CURSOR_VXV INTO REGISTRO;
-         END LOOP;
-     CLOSE CURSOR_VXV;
-END;
-        
-BEGIN
-   vxvw;
-END;
-
-
+SELECT VXV();
 
 -----Ventas por forma de pago LOOP
 
-CREATE OR REPLACE PROCEDURE VXFP IS
-    CURSOR CURSOR_VXFP IS
-        SELECT 
-            nom_f_pago nombre, sum(val_factura) total_ventas
-        FROM
-            F_PAGO, CLIENTE, FACTURA
-        WHERE
-            F_PAGO.cod_f_pago=CLIENTE.cod_f_pago AND
-            CLIENTE.cod_cliente=FACTURA.cod_cliente
-        GROUP BY ROLLUP (nom_f_pago);
-    REGISTRO cursor_vxfp%rowtype;
+CREATE OR REPLACE FUNCTION VXFP() RETURNS void AS $$
+DECLARE
+  cursor_vxfp CURSOR 
+  IS
+  SELECT nom_f_pago nombre, sum(val_factura) total_ventas
+  FROM F_PAGO, CLIENTE, FACTURA
+  WHERE
+      F_PAGO.cod_f_pago=CLIENTE.cod_f_pago AND
+      CLIENTE.cod_cliente=FACTURA.cod_cliente
+  GROUP BY ROLLUP (nombre);
+  registro RECORD;
 BEGIN
-     OPEN CURSOR_VXFP;
+  OPEN CURSOR_VXFP;
          LOOP
-             FETCH CURSOR_VXFP INTO REGISTRO;
-             EXIT WHEN CURSOR_VXFP%NOTFOUND;
-             imprimir(REGISTRO.nombre||' --> '||REGISTRO.total_ventas);
+         FETCH CURSOR_VXFP INTO REGISTRO;
+         EXIT WHEN NOT FOUND;
+         RAISE NOTICE '% --> %', REGISTRO.nombre, REGISTRO.total_ventas;
          END LOOP;
      CLOSE CURSOR_VXFP;
 END;
-        
+$$ LANGUAGE plpgsql;
+
+SELECT VXFP();
+
+-----Ventas por vendedor por forma de pago LOOP
+
+CREATE OR REPLACE FUNCTION VXVXFP() RETURNS void AS $$
+DECLARE
+  cursor_vxvxfp CURSOR 
+  IS
+  SELECT nom_vendedor nombre, nom_f_pago, sum(val_factura) total_ventas
+  FROM F_PAGO, CLIENTE, FACTURA, VENDEDOR
+  WHERE
+      F_PAGO.cod_f_pago = CLIENTE.cod_f_pago AND
+      CLIENTE.cod_cliente = FACTURA.cod_cliente AND
+      VENDEDOR.cod_vendedor = CLIENTE.cod_vendedor
+  Group by nombre, nom_f_pago
+  order by sum(val_factura) desc;
+  registro RECORD;
 BEGIN
-   vxfp;
+  OPEN CURSOR_VXVXFP;
+         LOOP
+         FETCH CURSOR_VXVXFP INTO REGISTRO;
+         EXIT WHEN NOT FOUND;
+         RAISE NOTICE '% --> % --> %', REGISTRO.nombre, REGISTRO.total_ventas, REGISTRO.nom_f_pago;
+         END LOOP;
+     CLOSE CURSOR_VXVXFP;
 END;
+$$ LANGUAGE plpgsql;
+
+SELECT VXVXFP();
+
+-----Ventas por vendedor FOR (Forma de pago dada)
+
+CREATE OR REPLACE FUNCTION VXV2(f_pago_dado) RETURNS void AS $$
+DECLARE
+  cursor_vxv2 CURSOR 
+  IS
+  SELECT nom_vendedor nombre, sum(val_factura) total_ventas, nom_f_pago
+  FROM VENDEDOR, CLIENTE, FACTURA, F_PAGO
+  WHERE
+      VENDEDOR.cod_vendedor=CLIENTE.cod_vendedor AND
+      CLIENTE.cod_cliente=FACTURA.cod_cliente AND
+      F_PAGO.cod_f_pago = CLIENTE.cod_f_pago AND
+      F_PAGO.cod_f_pago=f_pago_dado
+  GROUP BY ROLLUP (nombre);
+  registro RECORD;
+BEGIN
+  OPEN CURSOR_VXV2;
+         FOR REGISTRO IN CURSOR_VXV2 LOOP
+              RAISE NOTICE '% --> % --> %', REGISTRO.nom_f_pago, REGISTRO.nombre, REGISTRO.total_ventas;
+         END LOOP;
+     CLOSE CURSOR_VXV2;
+END;
+$$ LANGUAGE plpgsql;
+
+SELECT VXV2();
+
+-----Ventas por ciudad WHILE
+
+CREATE OR REPLACE FUNCTION VXC() RETURNS void AS $$
+DECLARE
+  cursor_vxc CURSOR 
+  IS
+  SELECT nom_ciudad nombre, sum(val_factura) total_ventas
+  FROM CIUDAD, CLIENTE, FACTURA
+  WHERE
+      CIUDAD.cod_ciudad=CLIENTE.cod_ciudad AND
+      CLIENTE.cod_cliente=FACTURA.cod_cliente
+  GROUP BY ROLLUP (nombre);
+  registro RECORD;
+BEGIN
+  OPEN CURSOR_VXC;
+         FETCH CURSOR_VXC INTO REGISTRO;
+         WHILE registro NOTNULL LOOP
+              RAISE NOTICE '% --> %', REGISTRO.nombre, REGISTRO.total_ventas;
+              FETCH CURSOR_VXC INTO REGISTRO;
+         END LOOP;
+     CLOSE CURSOR_VXc;
+END;
+$$ LANGUAGE plpgsql;
+
+SELECT VXC();
