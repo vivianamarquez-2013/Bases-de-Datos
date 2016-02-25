@@ -11,25 +11,25 @@ CREATE TABLE factura
 
 CREATE TABLE VENDEDOR
 ( cod_vendedor numeric,
-  nom_vendedor text,
+  nom_vendedor VARCHAR(30),
   PRIMARY KEY (cod_vendedor)
 );
 
 CREATE TABLE CIUDAD
 ( cod_ciudad numeric,
-  nom_ciudad text,
+  nom_ciudad VARCHAR(30),
   PRIMARY KEY (cod_ciudad)
 );
 
 CREATE TABLE F_PAGO
 ( cod_f_pago numeric,
-  nom_f_pago text,
+  nom_f_pago VARCHAR(30),
   PRIMARY KEY (cod_f_pago)
 );
 
 CREATE TABLE CLIENTE
 ( cod_cliente numeric,
-  nom_cliente text,
+  nom_cliente VARCHAR(30),
   cod_vendedor numeric,
   cod_ciudad numeric,
   cod_f_pago numeric,
