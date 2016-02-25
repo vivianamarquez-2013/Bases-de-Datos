@@ -149,4 +149,142 @@ INSERT INTO FACTURA(cod_factura, cod_cliente, val_factura)
    
 ---*---*--- Funciones
 
+-----Ventas por vendedor WHILE
+
+CREATE PROCEDURE VXV
+AS
+BEGIN
+	DECLARE @nombre VARCHAR(30);
+	DECLARE @totalVentas NUMERIC(20, 0);
+
+	DECLARE CURSOR_VXV CURSOR
+	FOR
+		SELECT
+			nom_vendedor, sum(val_factura)
+        FROM 
+		    VENDEDOR, CLIENTE, FACTURA
+        WHERE
+             VENDEDOR.cod_vendedor=CLIENTE.cod_vendedor AND
+             CLIENTE.cod_cliente=FACTURA.cod_cliente
+        GROUP BY ROLLUP (nom_vendedor);
+
+		OPEN CURSOR_VXV;
+
+		FETCH NEXT FROM CURSOR_VXV INTO @nombre, @totalVentas
+		WHILE @@FETCH_STATUS = 0
+		BEGIN
+			PRINT @nombre + ' --- ' + CONVERT(VARCHAR(30), @totalVentas);
+			FETCH NEXT FROM CURSOR_VXV INTO @nombre, @totalVentas;
+		END;
+
+	CLOSE CURSOR_VXV;
+	DEALLOCATE CURSOR_VXV;
+END;
+
+EXECUTE VXV;
+
+-----Ventas por ciudad WHILE
+
+CREATE PROCEDURE VXC
+AS
+BEGIN
+	DECLARE @nombre VARCHAR(30);
+	DECLARE @totalVentas NUMERIC(20, 0);
+
+	DECLARE CURSOR_VXC CURSOR
+	FOR
+		SELECT
+			nom_ciudad, sum(val_factura)
+        FROM 
+		    CIUDAD, CLIENTE, FACTURA
+        WHERE
+             CIUDAD.cod_ciudad=CLIENTE.cod_ciudad AND
+             CLIENTE.cod_cliente=FACTURA.cod_cliente
+        GROUP BY ROLLUP (nom_ciudad);
+
+		OPEN CURSOR_VXC;
+
+		FETCH NEXT FROM CURSOR_VXC INTO @nombre, @totalVentas
+		WHILE @@FETCH_STATUS = 0
+		BEGIN
+			PRINT @nombre + ' --- ' + CONVERT(VARCHAR(30), @totalVentas);
+			FETCH NEXT FROM CURSOR_VXC INTO @nombre, @totalVentas;
+		END;
+
+	CLOSE CURSOR_VXC;
+	DEALLOCATE CURSOR_VXC;
+END;
+
+EXECUTE VXC;
+
+-----Ventas por forma de pago LOOP
+
+CREATE PROCEDURE VXFP
+AS
+BEGIN
+	DECLARE @nombre VARCHAR(30);
+	DECLARE @totalVentas NUMERIC(20, 0);
+
+	DECLARE CURSOR_VXFP CURSOR
+	FOR
+		SELECT
+			nom_f_pago, sum(val_factura)
+        FROM 
+		    F_PAGO, CLIENTE, FACTURA
+        WHERE
+            F_PAGO.cod_f_pago=CLIENTE.cod_f_pago AND
+			CLIENTE.cod_cliente=FACTURA.cod_cliente
+        GROUP BY ROLLUP (nom_f_pago);
+
+		OPEN CURSOR_VXFP;
+
+		FETCH NEXT FROM CURSOR_VXFP INTO @nombre, @totalVentas
+		WHILE @@FETCH_STATUS = 0
+		BEGIN
+			PRINT @nombre + ' --- ' + CONVERT(VARCHAR(30), @totalVentas);
+			FETCH NEXT FROM CURSOR_VXFP INTO @nombre, @totalVentas;
+		END;
+
+	CLOSE CURSOR_VXFP;
+	DEALLOCATE CURSOR_VXFP;
+END;
+
+EXECUTE VXFP;
+
+-----Ventas por vendedor FOR (Forma de pago dada)
+(No existe FOR en SQL Server, se simula con WHILE)
+
+CREATE PROCEDURE VXVXFP
+AS
+BEGIN
+	DECLARE @nombre VARCHAR(30);
+	DECLARE @nombre_v VARCHAR(30);
+	DECLARE @totalVentas NUMERIC(20, 0);
+
+	DECLARE CURSOR_VXVXFP CURSOR
+	FOR
+		SELECT
+			nom_f_pago, nom_vendedor, sum(val_factura)
+        FROM 
+		    F_PAGO, CLIENTE, FACTURA, VENDEDOR
+        WHERE
+			F_PAGO.cod_f_pago = CLIENTE.cod_f_pago AND
+			CLIENTE.cod_cliente = FACTURA.cod_cliente AND
+			VENDEDOR.cod_vendedor = CLIENTE.cod_vendedor
+        GROUP BY nom_vendedor, nom_f_pago;
+
+		OPEN CURSOR_VXVXFP;
+
+		FETCH NEXT FROM CURSOR_VXVXFP INTO @nombre_v, @nombre, @totalVentas
+		WHILE @@FETCH_STATUS = 0
+		BEGIN
+			PRINT @nombre_v + ' --- ' + @nombre + ' --- ' + CONVERT(VARCHAR(30), @totalVentas);
+			FETCH NEXT FROM CURSOR_VXVXFP INTO @nombre_v, @nombre, @totalVentas;
+		END;
+
+	CLOSE CURSOR_VXVXFP;
+	DEALLOCATE CURSOR_VXVXFP;
+END;
+
+EXECUTE VXVXFP;
 
