@@ -217,7 +217,7 @@ END;
 
 EXECUTE VXC;
 
------Ventas por forma de pago LOOP
+-----Ventas por forma de pago WHILE
 
 CREATE PROCEDURE VXFP
 AS
@@ -288,3 +288,40 @@ END;
 
 EXECUTE VXVXFP;
 
+
+-----Ventas por vendedor WHILE (Forma de pago dada)
+
+CREATE PROCEDURE VXVXFPD (@input NUMERIC)
+AS
+BEGIN
+	DECLARE @nombre VARCHAR(30);
+	DECLARE @nombre_v VARCHAR(30);
+	DECLARE @totalVentas NUMERIC(20, 0);
+
+	DECLARE CURSOR_VXVXFPD CURSOR
+	FOR
+		SELECT
+			nom_f_pago, nom_vendedor, sum(val_factura)
+        FROM 
+		    F_PAGO, CLIENTE, FACTURA, VENDEDOR
+        WHERE
+			F_PAGO.cod_f_pago = CLIENTE.cod_f_pago AND
+			CLIENTE.cod_cliente = FACTURA.cod_cliente AND
+			VENDEDOR.cod_vendedor = CLIENTE.cod_vendedor AND
+			F_PAGO.cod_f_pago = @input
+        GROUP BY nom_vendedor, nom_f_pago;
+
+		OPEN CURSOR_VXVXFPD;
+
+		FETCH NEXT FROM CURSOR_VXVXFPD INTO @nombre_v, @nombre, @totalVentas
+		WHILE @@FETCH_STATUS = 0
+		BEGIN
+			PRINT @nombre_v + ' --- ' + @nombre + ' --- ' + CONVERT(VARCHAR(30), @totalVentas);
+			FETCH NEXT FROM CURSOR_VXVXFPD INTO @nombre_v, @nombre, @totalVentas;
+		END;
+
+	CLOSE CURSOR_VXVXFPD;
+	DEALLOCATE CURSOR_VXVXFPD;
+END;
+
+EXECUTE VXVXFPD @input=1;
