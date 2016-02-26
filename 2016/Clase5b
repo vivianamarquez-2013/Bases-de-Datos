@@ -219,3 +219,37 @@ CREATE OR REPLACE PACKAGE BODY PBIBLIOTECA IS
      END;
 
 END PBIBLIOTECA;
+
+
+
+
+
+CREATE OR REPLACE PACKAGE BODY PBLIBLIOTECA IS 
+    
+    PROCEDURE imprimir (cadena varchar) IS
+        BEGIN
+          dbms_output.put_line(cadena);
+        END;
+
+    PROCEDURE LXA IS
+      CURSOR CURSOR_LXA IS
+        SELECT
+          nom_autor as NOMBRE_AUTOR, count(cod_prestamo) as NO_LIBROS_PRESTADOS
+        FROM
+          PRESTAMO_B, LIBRO_B, AUTOR_B
+        WHERE
+          PRESTAMO_B.cod_libro=LIBRO_B.cod_libro AND
+          LIBRO_B.cod_autor=AUTOR_B.cod_autor
+        GROUP BY nom_autor;
+      REGISTRO cursor_lxa%rowtype;
+      BEGIN
+        OPEN CURSOR_lxa;
+          LOOP
+             FETCH CURSOR_lxa INTO REGISTRO;
+             EXIT WHEN CURSOR_lxa%NOTFOUND;
+             PBLIBLIOTECA.imprimir(REGISTRO.NOMBRE_AUTOR||' ---> '||REGISTRO.NO_LIBROS_PRESTADOS);
+          END LOOP;
+         CLOSE CURSOR_lxa;
+     END;
+
+END PBLIBLIOTECA;
