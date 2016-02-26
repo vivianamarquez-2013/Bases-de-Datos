@@ -1,0 +1,56 @@
+CREATE OR REPLACE PACKAGE PAQUETE1
+  IS 
+    PROCEDURE imprimir(cadena varchar);
+END PAQUETE1;
+
+
+
+CREATE OR REPLACE PACKAGE BODY PAQUETE1
+  IS 
+    PROCEDURE imprimir (cadena varchar)
+      IS
+        BEGIN
+          dbms_output.put_line(cadena);
+        END;
+END PAQUETE1;
+
+
+
+BEGIN
+  PAQUETE1.IMPRIMIR('HOLA MUNDITO');
+END;
+
+
+
+CREATE OR REPLACE PACKAGE PAQUETE1
+  IS 
+    PROCEDURE imprimir(cadena varchar);
+    FUNCTION sumar(n1 number, n2 number)
+      RETURN VARCHAR;
+END PAQUETE1;
+
+
+
+CREATE OR REPLACE PACKAGE BODY PAQUETE1
+  IS 
+    PROCEDURE imprimir (cadena varchar)
+      IS
+        BEGIN
+          dbms_output.put_line(cadena);
+        END;
+    FUNCTION sumar (n1 number, n2 number)
+      RETURN VARCHAR
+        IS
+          BEGIN
+            return('La suma es '||(n1+n2));
+          END;
+END PAQUETE1;
+
+
+
+BEGIN
+  Paquete1.imprimir(PAQUETE1.sumar(2,6));
+END;
+
+
+
