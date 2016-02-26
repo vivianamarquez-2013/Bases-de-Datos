@@ -1,0 +1,186 @@
+---*---*--- BIBLIOTECA
+
+CREATE TABLE CIUDAD_B
+( cod_ciudad number,
+  nom_ciudad varchar2(30),
+  PRIMARY KEY (cod_ciudad)
+);
+
+CREATE TABLE USUARIO_B
+( cod_usuario number,
+  nom_usuario varchar2(30),
+  cod_ciudad number,
+  PRIMARY KEY (cod_usuario)
+);
+
+CREATE TABLE LIBRO_B
+( cod_libro number,
+  nom_libro varchar2(30),
+  cod_autor number,
+  PRIMARY KEY (cod_libro)
+);
+
+CREATE TABLE AUTOR_B
+( cod_autor number,
+  nom_autor varchar2(30),
+  PRIMARY KEY (cod_autor)
+);
+
+CREATE TABLE PRESTAMO_B
+( cod_prestamo number,
+  cod_libro number,
+  cod_usuario number,
+  fec_prestamo date,
+  fec_devolucion date,
+  PRIMARY KEY (cod_prestamo)
+);
+
+
+
+-----
+ALTER TABLE USUARIO_B
+  ADD (cod_ciudad number);
+  
+DESC USUARIO_B;
+-----
+
+
+ALTER TABLE USUARIO_B
+  add CONSTRAINT cod_ciudadb_fk
+  FOREIGN KEY (cod_ciudad)
+  REFERENCES CIUDAD_B(cod_ciudad)
+;
+
+ALTER TABLE PRESTAMO_B
+  add CONSTRAINT cod_usuario_fk
+  FOREIGN KEY (cod_usuario)
+  REFERENCES USUARIO_B(cod_usuario)
+;
+
+ALTER TABLE PRESTAMO_B
+  add CONSTRAINT cod_libro_fk
+  FOREIGN KEY (cod_libro)
+  REFERENCES LIBRO_B(cod_libro)
+;
+
+ALTER TABLE LIBRO_B
+  add CONSTRAINT cod_autor_fk
+  FOREIGN KEY (cod_autor)
+  REFERENCES AUTOR_B(cod_autor)
+;
+
+
+-----*-----*-----
+
+INSERT INTO CIUDAD_B(cod_ciudad, nom_ciudad)
+   VALUES(1, 'Bogotá');
+
+INSERT INTO CIUDAD_B(cod_ciudad, nom_ciudad)
+   VALUES(2, 'São Paulo');
+
+INSERT INTO CIUDAD_B(cod_ciudad, nom_ciudad)
+   VALUES(3, 'Moscú');
+   
+INSERT INTO USUARIO_B(cod_usuario, nom_usuario, cod_ciudad)
+   VALUES(1, 'Valeria', 1);
+
+INSERT INTO USUARIO_B(cod_usuario, nom_usuario, cod_ciudad)
+   VALUES(2, 'Vanessa', 2);
+
+INSERT INTO USUARIO_B(cod_usuario, nom_usuario, cod_ciudad)
+   VALUES(3, 'Vera', 3);
+
+INSERT INTO USUARIO_B(cod_usuario, nom_usuario, cod_ciudad)
+   VALUES(4, 'Victoria', 1);
+   
+INSERT INTO AUTOR_B(cod_autor, nom_autor)
+   VALUES(1, 'Aleksandr');
+
+INSERT INTO AUTOR_B(cod_autor, nom_autor)
+   VALUES(2, 'Boris');
+
+INSERT INTO AUTOR_B(cod_autor, nom_autor)
+   VALUES(3, 'Volodia');
+
+INSERT INTO LIBRO_B(cod_libro, nom_libro, cod_autor)
+   VALUES(1, 'Voces de Chernóbil', 1);
+
+INSERT INTO LIBRO_B(cod_libro, nom_libro, cod_autor)
+   VALUES(2, 'A culpa é das estrelas', 2);
+
+INSERT INTO LIBRO_B(cod_libro, nom_libro, cod_autor)
+   VALUES(3, 'Una aflicción imperial', 3);
+
+INSERT INTO LIBRO_B(cod_libro, nom_libro, cod_autor)
+   VALUES(4, 'Crónica de una muerte', 2);
+
+INSERT INTO LIBRO_B(cod_libro, nom_libro, cod_autor)
+   VALUES(5, 'Bases de Datos II para Dummies', 1);
+   
+INSERT INTO PRESTAMO_B(cod_prestamo, cod_libro, cod_usuario, fec_prestamo, fec_devolucion)
+   VALUES(1, 1, 1, to_date('20160101','YYYYMMDD'), to_date('20160115','YYYYMMDD'));
+
+INSERT INTO PRESTAMO_B(cod_prestamo, cod_libro, cod_usuario, fec_prestamo, fec_devolucion)
+   VALUES(2, 2, 2, to_date('20160115','YYYYMMDD'), to_date('20160130','YYYYMMDD'));
+
+INSERT INTO PRESTAMO_B(cod_prestamo, cod_libro, cod_usuario, fec_prestamo, fec_devolucion)
+   VALUES(3, 3, 3, to_date('20160201','YYYYMMDD'), to_date('20160215','YYYYMMDD'));
+
+INSERT INTO PRESTAMO_B(cod_prestamo, cod_libro, cod_usuario, fec_prestamo, fec_devolucion)
+   VALUES(4, 4, 4, to_date('20160215','YYYYMMDD'), to_date('20160228','YYYYMMDD'));
+
+INSERT INTO PRESTAMO_B(cod_prestamo, cod_libro, cod_usuario, fec_prestamo, fec_devolucion)
+   VALUES(5, 5, 1, to_date('20160301','YYYYMMDD'), to_date('20160315','YYYYMMDD'));
+
+INSERT INTO PRESTAMO_B(cod_prestamo, cod_libro, cod_usuario, fec_prestamo, fec_devolucion)
+   VALUES(6, 1, 2, to_date('20160315','YYYYMMDD'), to_date('20160330','YYYYMMDD'));
+
+INSERT INTO PRESTAMO_B(cod_prestamo, cod_libro, cod_usuario, fec_prestamo, fec_devolucion)
+   VALUES(7, 2, 3, to_date('20160401','YYYYMMDD'), to_date('20160415','YYYYMMDD'));
+
+INSERT INTO PRESTAMO_B(cod_prestamo, cod_libro, cod_usuario, fec_prestamo, fec_devolucion)
+   VALUES(8, 3, 4, to_date('20160415','YYYYMMDD'), to_date('20160430','YYYYMMDD'));
+
+INSERT INTO PRESTAMO_B(cod_prestamo, cod_libro, cod_usuario, fec_prestamo, fec_devolucion)
+   VALUES(9, 4, 1, to_date('20160501','YYYYMMDD'), to_date('20160515','YYYYMMDD'));
+
+INSERT INTO PRESTAMO_B(cod_prestamo, cod_libro, cod_usuario, fec_prestamo, fec_devolucion)
+   VALUES(10, 5, 2, to_date('20160515','YYYYMMDD'), to_date('20160530','YYYYMMDD'));
+
+INSERT INTO PRESTAMO_B(cod_prestamo, cod_libro, cod_usuario, fec_prestamo, fec_devolucion)
+   VALUES(11, 1, 1, to_date('20160601','YYYYMMDD'), to_date('20160615','YYYYMMDD'));
+
+INSERT INTO PRESTAMO_B(cod_prestamo, cod_libro, cod_usuario, fec_prestamo, fec_devolucion)
+   VALUES(12, 2, 2, to_date('20160615','YYYYMMDD'), to_date('20160630','YYYYMMDD'));
+
+INSERT INTO PRESTAMO_B(cod_prestamo, cod_libro, cod_usuario, fec_prestamo, fec_devolucion)
+   VALUES(13, 3, 3, to_date('20160701','YYYYMMDD'), to_date('20160715','YYYYMMDD'));
+
+INSERT INTO PRESTAMO_B(cod_prestamo, cod_libro, cod_usuario, fec_prestamo, fec_devolucion)
+   VALUES(14, 4, 4, to_date('20160715','YYYYMMDD'), to_date('20160730','YYYYMMDD'));
+
+INSERT INTO PRESTAMO_B(cod_prestamo, cod_libro, cod_usuario, fec_prestamo, fec_devolucion)
+   VALUES(15, 5, 1, to_date('20160801','YYYYMMDD'), to_date('20160815','YYYYMMDD'));
+
+INSERT INTO PRESTAMO_B(cod_prestamo, cod_libro, cod_usuario, fec_prestamo, fec_devolucion)
+   VALUES(16, 1, 2, to_date('20160815','YYYYMMDD'), to_date('20160830','YYYYMMDD'));
+
+INSERT INTO PRESTAMO_B(cod_prestamo, cod_libro, cod_usuario, fec_prestamo, fec_devolucion)
+   VALUES(17, 2, 3, to_date('20160901','YYYYMMDD'), to_date('20160915','YYYYMMDD'));
+
+INSERT INTO PRESTAMO_B(cod_prestamo, cod_libro, cod_usuario, fec_prestamo, fec_devolucion)
+   VALUES(18, 3, 4, to_date('20160915','YYYYMMDD'), to_date('20160930','YYYYMMDD'));
+
+INSERT INTO PRESTAMO_B(cod_prestamo, cod_libro, cod_usuario, fec_prestamo, fec_devolucion)
+   VALUES(19, 4, 1, to_date('20161001','YYYYMMDD'), to_date('20161015','YYYYMMDD'));
+
+INSERT INTO PRESTAMO_B(cod_prestamo, cod_libro, cod_usuario, fec_prestamo, fec_devolucion)
+   VALUES(20, 5, 2, to_date('20161015','YYYYMMDD'), to_date('20161030','YYYYMMDD'));
+
+SELECT * FROM PRESTAMO_B;
+
+
+
+
+-----*-----*-----
+
