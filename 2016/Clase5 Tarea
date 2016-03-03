@@ -36,3 +36,288 @@ END PB;
 BEGIN
   PB.LXA;
 END;
+
+--------------------------------------------------------------------------------------------
+
+CREATE OR REPLACE PACKAGE PB
+  IS 
+    PROCEDURE imprimir(cadena varchar);
+    PROCEDURE LXA;
+    PROCEDURE PXC(ciudad_dada number);
+END PB;
+
+CREATE OR REPLACE PACKAGE BODY PB IS 
+    
+    PROCEDURE imprimir (cadena varchar) IS
+        BEGIN
+          dbms_output.put_line(cadena);
+        END;
+
+    PROCEDURE LXA IS
+      CURSOR CURSOR_LXA IS
+        SELECT
+          nom_autor as NOMBRE_AUTOR, count(cod_prestamo) as NO_LIBROS_PRESTADOS
+        FROM
+          PRESTAMO_B, LIBRO_B, AUTOR_B
+        WHERE
+          PRESTAMO_B.cod_libro=LIBRO_B.cod_libro AND
+          LIBRO_B.cod_autor=AUTOR_B.cod_autor
+        GROUP BY nom_autor;
+      REGISTRO cursor_lxa%rowtype;
+      BEGIN
+        OPEN CURSOR_lxa;
+          LOOP
+             FETCH CURSOR_lxa INTO REGISTRO;
+             EXIT WHEN CURSOR_lxa%NOTFOUND;
+             PB.imprimir(REGISTRO.NOMBRE_AUTOR||' ---> '||REGISTRO.NO_LIBROS_PRESTADOS);
+          END LOOP;
+         CLOSE CURSOR_lxa;
+     END;
+
+    PROCEDURE PXC(ciudad_dada number) IS
+      CURSOR CURSOR_PXC IS
+        SELECT
+          nom_ciudad as NOMBRE, count(cod_prestamo) as NO_LIBROS_PRESTADOS
+        FROM
+          PRESTAMO_B, CIUDAD_B, USUARIO_B
+        WHERE
+          PRESTAMO_B.cod_usuario=USUARIO_B.cod_usuario AND
+          USUARIO_B.cod_ciudad=CIUDAD_B.cod_ciudad AND
+          CIUDAD_B.cod_ciudad = ciudad_dada
+        GROUP BY nom_ciudad;
+      REGISTRO cursor_pxc%rowtype;
+      BEGIN
+        OPEN CURSOR_pxc;
+          LOOP
+             FETCH CURSOR_pxc INTO REGISTRO;
+             EXIT WHEN CURSOR_pxc%NOTFOUND;
+             PB.imprimir(REGISTRO.NOMBRE||' ---> '||REGISTRO.NO_LIBROS_PRESTADOS);
+          END LOOP;
+         CLOSE CURSOR_pxc;
+     END;
+END PB;
+
+BEGIN
+  PB.PXC(3);
+END;
+
+--------------------------------------------------------------------------------------------
+
+CREATE OR REPLACE PACKAGE PB
+  IS 
+    PROCEDURE imprimir(cadena varchar);
+    PROCEDURE LXA;
+    PROCEDURE PXC(ciudad_dada number);
+    PROCEDURE PXAXC(autor_dado number, ciudad_dada number);
+END PB;
+
+CREATE OR REPLACE PACKAGE BODY PB IS 
+    
+    PROCEDURE imprimir (cadena varchar) IS
+        BEGIN
+          dbms_output.put_line(cadena);
+        END;
+
+    PROCEDURE LXA IS
+      CURSOR CURSOR_LXA IS
+        SELECT
+          nom_autor as NOMBRE_AUTOR, count(cod_prestamo) as NO_LIBROS_PRESTADOS
+        FROM
+          PRESTAMO_B, LIBRO_B, AUTOR_B
+        WHERE
+          PRESTAMO_B.cod_libro=LIBRO_B.cod_libro AND
+          LIBRO_B.cod_autor=AUTOR_B.cod_autor
+        GROUP BY nom_autor;
+      REGISTRO cursor_lxa%rowtype;
+      BEGIN
+        OPEN CURSOR_lxa;
+          LOOP
+             FETCH CURSOR_lxa INTO REGISTRO;
+             EXIT WHEN CURSOR_lxa%NOTFOUND;
+             PB.imprimir(REGISTRO.NOMBRE_AUTOR||' ---> '||REGISTRO.NO_LIBROS_PRESTADOS);
+          END LOOP;
+         CLOSE CURSOR_lxa;
+     END;
+
+    PROCEDURE PXC(ciudad_dada number) IS
+      CURSOR CURSOR_PXC IS
+        SELECT
+          nom_ciudad as NOMBRE, count(cod_prestamo) as NO_LIBROS_PRESTADOS
+        FROM
+          PRESTAMO_B, CIUDAD_B, USUARIO_B
+        WHERE
+          PRESTAMO_B.cod_usuario=USUARIO_B.cod_usuario AND
+          USUARIO_B.cod_ciudad=CIUDAD_B.cod_ciudad AND
+          CIUDAD_B.cod_ciudad = ciudad_dada
+        GROUP BY nom_ciudad;
+      REGISTRO cursor_pxc%rowtype;
+      BEGIN
+        OPEN CURSOR_pxc;
+          LOOP
+             FETCH CURSOR_pxc INTO REGISTRO;
+             EXIT WHEN CURSOR_pxc%NOTFOUND;
+             PB.imprimir(REGISTRO.NOMBRE||' ---> '||REGISTRO.NO_LIBROS_PRESTADOS);
+          END LOOP;
+         CLOSE CURSOR_pxc;
+     END;
+
+     PROCEDURE PXAXC(autor_dado number, ciudad_dada number) IS
+      CURSOR CURSOR_PXAXC IS
+        SELECT
+          nom_ciudad as NOMBRE_CIUDAD, nom_autor as NOMBRE_AUTOR, count(cod_prestamo) as NO_LIBROS_PRESTADOS
+        FROM
+          AUTOR_B, LIBRO_B, PRESTAMO_B, CIUDAD_B, USUARIO_B
+        WHERE
+          AUTOR_B.cod_autor=LIBRO_B.cod_autor AND
+          LIBRO_B.cod_libro = PRESTAMO_B.cod_libro AND
+          PRESTAMO_B.cod_usuario=USUARIO_B.cod_usuario AND
+          USUARIO_B.cod_ciudad=CIUDAD_B.cod_ciudad AND
+          CIUDAD_B.cod_ciudad = ciudad_dada AND
+          AUTOR_B.cod_autor= autor_dado
+        GROUP BY nom_autor, nom_ciudad;
+      REGISTRO cursor_PXAXC%rowtype;
+      BEGIN
+        OPEN CURSOR_PXAXC;
+          LOOP
+             FETCH CURSOR_PXAXC INTO REGISTRO;
+             EXIT WHEN CURSOR_PXAXC%NOTFOUND;
+             PB.imprimir(REGISTRO.NOMBRE_AUTOR||' ---> '||REGISTRO.NOMBRE_CIUDAD||' ---> '||REGISTRO.NO_LIBROS_PRESTADOS);
+          END LOOP;
+         CLOSE CURSOR_PXAXC;
+     END;
+
+END PB;
+
+BEGIN
+  PB.PXAXC(1, 1);
+END;
+
+--------------------------------------------------------------------------------------------  
+  
+CREATE OR REPLACE PACKAGE PB
+  IS 
+    PROCEDURE imprimir(cadena varchar);
+    PROCEDURE LXA;
+    PROCEDURE PXC(ciudad_dada number);
+    PROCEDURE PXAXC(autor_dado number, ciudad_dada number);
+    PROCEDURE PXU;
+END PB;
+
+CREATE OR REPLACE PACKAGE BODY PB IS 
+    
+    PROCEDURE imprimir (cadena varchar) IS
+        BEGIN
+          dbms_output.put_line(cadena);
+        END;
+
+    PROCEDURE LXA IS
+      CURSOR CURSOR_LXA IS
+        SELECT
+          nom_autor as NOMBRE_AUTOR, count(cod_prestamo) as NO_LIBROS_PRESTADOS
+        FROM
+          PRESTAMO_B, LIBRO_B, AUTOR_B
+        WHERE
+          PRESTAMO_B.cod_libro=LIBRO_B.cod_libro AND
+          LIBRO_B.cod_autor=AUTOR_B.cod_autor
+        GROUP BY nom_autor;
+      REGISTRO cursor_lxa%rowtype;
+      BEGIN
+        OPEN CURSOR_lxa;
+          LOOP
+             FETCH CURSOR_lxa INTO REGISTRO;
+             EXIT WHEN CURSOR_lxa%NOTFOUND;
+             PB.imprimir(REGISTRO.NOMBRE_AUTOR||' ---> '||REGISTRO.NO_LIBROS_PRESTADOS);
+          END LOOP;
+         CLOSE CURSOR_lxa;
+     END;
+
+    PROCEDURE PXC(ciudad_dada number) IS
+      CURSOR CURSOR_PXC IS
+        SELECT
+          nom_ciudad as NOMBRE, count(cod_prestamo) as NO_LIBROS_PRESTADOS
+        FROM
+          PRESTAMO_B, CIUDAD_B, USUARIO_B
+        WHERE
+          PRESTAMO_B.cod_usuario=USUARIO_B.cod_usuario AND
+          USUARIO_B.cod_ciudad=CIUDAD_B.cod_ciudad AND
+          CIUDAD_B.cod_ciudad = ciudad_dada
+        GROUP BY nom_ciudad;
+      REGISTRO cursor_pxc%rowtype;
+      BEGIN
+        OPEN CURSOR_pxc;
+          LOOP
+             FETCH CURSOR_pxc INTO REGISTRO;
+             EXIT WHEN CURSOR_pxc%NOTFOUND;
+             PB.imprimir(REGISTRO.NOMBRE||' ---> '||REGISTRO.NO_LIBROS_PRESTADOS);
+          END LOOP;
+         CLOSE CURSOR_pxc;
+     END;
+
+     PROCEDURE PXAXC(autor_dado number, ciudad_dada number) IS
+      CURSOR CURSOR_PXAXC IS
+        SELECT
+          nom_ciudad as NOMBRE_CIUDAD, nom_autor as NOMBRE_AUTOR, count(cod_prestamo) as NO_LIBROS_PRESTADOS
+        FROM
+          AUTOR_B, LIBRO_B, PRESTAMO_B, CIUDAD_B, USUARIO_B
+        WHERE
+          AUTOR_B.cod_autor=LIBRO_B.cod_autor AND
+          LIBRO_B.cod_libro = PRESTAMO_B.cod_libro AND
+          PRESTAMO_B.cod_usuario=USUARIO_B.cod_usuario AND
+          USUARIO_B.cod_ciudad=CIUDAD_B.cod_ciudad AND
+          CIUDAD_B.cod_ciudad = ciudad_dada AND
+          AUTOR_B.cod_autor= autor_dado
+        GROUP BY nom_autor, nom_ciudad;
+      REGISTRO cursor_PXAXC%rowtype;
+      BEGIN
+        OPEN CURSOR_PXAXC;
+          LOOP
+             FETCH CURSOR_PXAXC INTO REGISTRO;
+             EXIT WHEN CURSOR_PXAXC%NOTFOUND;
+             PB.imprimir(REGISTRO.NOMBRE_AUTOR||' ---> '||REGISTRO.NOMBRE_CIUDAD||' ---> '||REGISTRO.NO_LIBROS_PRESTADOS);
+          END LOOP;
+         CLOSE CURSOR_PXAXC;
+     END;
+
+     PROCEDURE PXU IS
+      CURSOR CURSOR_PXU IS
+        SELECT
+          nom_usuario as NAMEE, count(cod_prestamo) as NO_LIBROS_PRESTADOS
+        FROM
+          PRESTAMO_B, USUARIO_B
+        WHERE
+          PRESTAMO_B.cod_usuario=USUARIO_B.cod_usuario
+        GROUP BY nom_usuario;
+      REGISTRO cursor_PXU%rowtype;
+      BEGIN
+        OPEN CURSOR_PXU;
+          LOOP
+             FETCH CURSOR_PXU INTO REGISTRO;
+             EXIT WHEN CURSOR_PXU%NOTFOUND;
+             PB.imprimir(REGISTRO.NAMEE||' ---> '||REGISTRO.NO_LIBROS_PRESTADOS);
+          END LOOP;
+         CLOSE CURSOR_PXU;
+     END;
+
+END PB;
+
+BEGIN
+  PB.PXU;
+END;  
+  
+--------------------------------------------------------------------------------------------
+
+BEGIN
+
+PB.imprimir('PRIMER PUNTO: Cantidad de libros prestados por autor.');
+PB.LXA;
+PB.imprimir(' ');
+PB.imprimir('SEGUNDO PUNTO: Cantidad de prestamos de una ciudad dada.');
+PB.PXC(3);
+PB.imprimir(' ');
+PB.imprimir('TERCER PUNTO: Cantidad de prestamos de un autor y de una ciudad dada.');
+PB.PXAXC(1, 1);
+PB.imprimir(' ');
+PB.imprimir('CUARTO PUNTO: Cantidad de prestamos por usuario.');
+PB.PXU;
+
+END;  
