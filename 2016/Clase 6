@@ -1,0 +1,74 @@
+---*---*--- NOTAS
+
+CREATE TABLE MATERIA
+( cod_materia number,
+  nom_materia varchar2(30),
+  PRIMARY KEY (cod_materia)
+);
+
+CREATE TABLE NOTA
+( cod_materia number,
+  cod_alumno number,
+  val_nota number,
+  PRIMARY KEY (cod_materia, cod_alumno)
+);
+
+CREATE TABLE ALUMNO
+( cod_alumno number,
+  nom_alumno varchar2(30),
+  PRIMARY KEY (cod_alumno)
+);
+
+ALTER TABLE NOTA
+  add CONSTRAINT cod_materia_fk
+  FOREIGN KEY (cod_materia)
+  REFERENCES MATERIA(cod_materia)
+;
+
+ALTER TABLE NOTA
+  add CONSTRAINT cod_alumno_fk
+  FOREIGN KEY (cod_alumno)
+  REFERENCES ALUMNO(cod_alumno)
+;
+
+INSERT INTO MATERIA(cod_materia, nom_materia)
+   VALUES(1, 'Bases de Datos I');
+   
+INSERT INTO MATERIA(cod_materia, nom_materia)
+   VALUES(2, 'Bases de Datos II');
+   
+INSERT INTO MATERIA(cod_materia, nom_materia)
+   VALUES(3, 'Bases de Datos III');
+   
+INSERT INTO ALUMNO(cod_alumno, nom_alumno)
+   VALUES(1, 'Excelentín');
+
+INSERT INTO ALUMNO(cod_alumno, nom_alumno)
+   VALUES(2, 'Buenín');
+   
+INSERT INTO ALUMNO(cod_alumno, nom_alumno)
+   VALUES(3, 'Tramposín');
+   
+INSERT INTO NOTA(cod_materia, cod_alumno, val_nota)
+   VALUES(1, 1, 5);
+   
+INSERT INTO NOTA(cod_materia, cod_alumno, val_nota)
+   VALUES(1, 2, 4);
+   
+INSERT INTO NOTA(cod_materia, cod_alumno, val_nota)
+   VALUES(2, 1, 5);
+   
+INSERT INTO NOTA(cod_materia, cod_alumno, val_nota)
+   VALUES(2, 2, 4);
+   
+INSERT INTO NOTA(cod_materia, cod_alumno, val_nota)
+   VALUES(2, 3, 3);
+   
+INSERT INTO NOTA(cod_materia, cod_alumno, val_nota)
+   VALUES(3, 1, 5);
+   
+INSERT INTO NOTA(cod_materia, cod_alumno, val_nota)
+   VALUES(3, 2, 4);
+   
+INSERT INTO NOTA(cod_materia, cod_alumno, val_nota)
+   VALUES(3, 3, 3);
