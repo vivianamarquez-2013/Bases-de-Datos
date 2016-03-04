@@ -72,3 +72,14 @@ INSERT INTO NOTA(cod_materia, cod_alumno, val_nota)
    
 INSERT INTO NOTA(cod_materia, cod_alumno, val_nota)
    VALUES(3, 3, 3);
+
+CREATE TABLE AUDI_NOTAS
+( cod_materia number,
+  cod_alumno number,
+  nota_vieja number,
+  nota_nueva number,
+  fecha_delito date,
+  ip_delito varchar2(30)
+);
+
+No debe tener llave porque puede ser que lo hagan muchas veces.
