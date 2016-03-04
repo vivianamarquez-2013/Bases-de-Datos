@@ -90,3 +90,34 @@ CREATE OR REPLACE TRIGGER AU_NOTA
   BEGIN
     INSERT INTO AUDI_NOTAS VALUES (:NEW.cod_materia, :NEW.cod_alumno, :OLD.val_nota, :NEW.val_nota, sysdate, sys_context('USERENV', 'IP_ADDRESS'));
   END;
+  
+CREATE OR REPLACE TRIGGER BD_NOTA
+  BEFORE DELETE ON NOTA 
+  FOR EACH ROW
+  BEGIN
+    INSERT INTO AUDI_NOTAS VALUES (:OLD.cod_materia, :OLD.cod_alumno, :OLD.val_nota, NULL, sysdate, sys_context('USERENV', 'HOST'));
+  END;
+  
+CREATE OR REPLACE TRIGGER AI_NOTA
+  AFTER INSERT ON NOTA 
+  FOR EACH ROW
+  BEGIN
+    INSERT INTO AUDI_NOTAS VALUES (:NEW.cod_materia, :NEW.cod_alumno, NULL, :NEW.val_nota, sysdate, sys_context('USERENV', 'IP_ADDRESS'));
+  END;
+  
+CREATE OR REPLACE TRIGGER TT_NOTA
+  BEFORE INSERT OR UPDATE OR DELETE ON NOTA 
+  FOR EACH ROW
+  BEGIN
+    IF INSERTING THEN 
+      INSERT INTO AUDI_NOTAS VALUES (:NEW.cod_materia, :NEW.cod_alumno, NULL, :NEW.val_nota, sysdate, sys_context('USERENV', 'IP_ADDRESS'));
+    END IF;  
+    IF DELETING THEN
+      INSERT INTO AUDI_NOTAS VALUES (:OLD.cod_materia, :OLD.cod_alumno, :OLD.val_nota, NULL, sysdate, sys_context('USERENV', 'IP_ADDRESS'));
+    END IF;
+    IF UPDATING THEN
+      INSERT INTO AUDI_NOTAS VALUES (:NEW.cod_materia, :NEW.cod_alumno, :OLD.val_nota, :NEW.val_nota, sysdate, sys_context('USERENV', 'IP_ADDRESS'));
+    END IF;
+  END;
+
+
