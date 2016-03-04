@@ -83,3 +83,10 @@ CREATE TABLE AUDI_NOTAS
 );
 
 No debe tener llave porque puede ser que lo hagan muchas veces.
+
+CREATE OR REPLACE TRIGGER AU_NOTA
+  AFTER UPDATE ON NOTA 
+  FOR EACH ROW
+  BEGIN
+    INSERT INTO AUDI_NOTAS VALUES (:NEW.cod_materia, :NEW.cod_alumno, :OLD.val_nota, :NEW.val_nota, sysdate, sys_context('USERENV', 'IP_ADDRESS'));
+  END;
