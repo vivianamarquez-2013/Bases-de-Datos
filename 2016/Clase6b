@@ -1,0 +1,70 @@
+CREATE TABLE CUENTA
+( cod_cuenta number,
+  nom_cuenta varchar2(30),
+  sal_cuenta number,
+  PRIMARY KEY (cod_cuenta)
+);
+
+CREATE TABLE MOVIMIENTO
+( cod_movimiento number,
+  cod_cuenta number,
+  cod_t_movimiento number,
+  fecha_movimiento date,
+  PRIMARY KEY (cod_movimiento)
+);
+
+CREATE TABLE T_MOVIMIENTO
+( cod_t_movimiento number,
+  nom_t_movimiento varchar2(30),
+  PRIMARY KEY (cod_t_movimiento)
+);
+
+ALTER TABLE MOVIMIENTO
+  add CONSTRAINT cod_cuenta_fk
+  FOREIGN KEY (cod_cuenta)
+  REFERENCES CUENTA(cod_cuenta)
+;
+
+ALTER TABLE MOVIMIENTO
+  add CONSTRAINT cod_t_movimiento_fk
+  FOREIGN KEY (cod_t_movimiento)
+  REFERENCES T_MOVIMIENTO(cod_t_movimiento)
+;
+
+INSERT INTO CUENTA VALUES(1, 'Paola', 0);
+
+INSERT INTO CUENTA VALUES(2, 'Carolina', 0);
+
+INSERT INTO CUENTA VALUES(3, 'Jessica', 0);
+
+INSERT INTO CUENTA VALUES(4, 'Laura', 0);
+
+INSERT INTO T_MOVIMIENTO VALUES(1, 'Consignación');
+
+INSERT INTO T_MOVIMIENTO VALUES(2, 'Retiro');
+
+INSERT INTO T_MOVIMIENTO VALUES(3, 'Consultar');
+
+create or replace TRIGGER AI_MOVIMIENTO
+  AFTER INSERT ON MOVIMIENTO
+  FOR EACH ROW
+  BEGIN
+    IF (:NEW.cod_t_movimiento = 1) THEN
+      UPDATE CUENTA
+        SET sal_cuenta = :NEW.val_movimiento + sal_cuenta
+        WHERE CUENTA.cod_cuenta = :NEW.cod_cuenta;
+    END IF; 
+  END;
+
+create or replace TRIGGER AI_MOVIMIENTO
+  AFTER INSERT ON MOVIMIENTO
+  FOR EACH ROW
+  BEGIN
+    IF (:NEW.cod_t_movimiento = 1) THEN
+      UPDATE CUENTA
+        SET sal_cuenta = :NEW.val_movimiento + sal_cuenta
+        WHERE CUENTA.cod_cuenta = :NEW.cod_cuenta;
+    END IF; 
+  END;
+
+
