@@ -115,7 +115,7 @@ CREATE OR REPLACE FUNCTION LXC() RETURNS void AS $$
 DECLARE
       CURSOR_LXC CURSOR IS
         SELECT
-          nom_ciudad, count(cod_prestamo)  NO_LIBROS_PRESTADOS
+          nom_ciudad, sum(1) NO_LIBROS_PRESTADOS
         FROM
           PRESTAMO, USUARIO, CIUDAD
         WHERE
