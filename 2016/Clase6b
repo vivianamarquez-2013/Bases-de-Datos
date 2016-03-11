@@ -1,3 +1,17 @@
+create or replace TRIGGER AI_MOVIMIENTO
+  AFTER INSERT ON MOVIMIENTO
+  FOR EACH ROW
+  BEGIN
+    IF (:NEW.cod_t_movimiento = 1) THEN
+      UPDATE CUENTA
+        SET sal_cuenta = :NEW.val_movimiento + sal_cuenta
+        WHERE CUENTA.cod_cuenta = :NEW.cod_cuenta;
+    END IF; 
+  END;
+  
+-------------------------
+
+
 CREATE TABLE CUENTA
 ( cod_cuenta number,
   nom_cuenta varchar2(30),
@@ -10,6 +24,7 @@ CREATE TABLE MOVIMIENTO
   cod_cuenta number,
   cod_t_movimiento number,
   fecha_movimiento date,
+  val_movimiento number,
   PRIMARY KEY (cod_movimiento)
 );
 
@@ -45,26 +60,52 @@ INSERT INTO T_MOVIMIENTO VALUES(2, 'Retiro');
 
 INSERT INTO T_MOVIMIENTO VALUES(3, 'Consultar');
 
-create or replace TRIGGER AI_MOVIMIENTO
-  AFTER INSERT ON MOVIMIENTO
-  FOR EACH ROW
-  BEGIN
-    IF (:NEW.cod_t_movimiento = 1) THEN
-      UPDATE CUENTA
-        SET sal_cuenta = :NEW.val_movimiento + sal_cuenta
-        WHERE CUENTA.cod_cuenta = :NEW.cod_cuenta;
-    END IF; 
-  END;
+SELECT * FROM MOVIMIENTO;
 
-create or replace TRIGGER AI_MOVIMIENTO
+SELECT * FROM T_MOVIMIENTO;
+
+SELECT * FROM CUENTA;
+
+SELECT * FROM T_MOVIMIENTO;
+CREATE OR REPLACE TRIGGER AI_MOVIMIENTO
   AFTER INSERT ON MOVIMIENTO
   FOR EACH ROW
+  DECLARE
+      NAME CUENTA.nom_cuenta%type;
+      SALDO CUENTA.sal_cuenta%type;
   BEGIN
-    IF (:NEW.cod_t_movimiento = 1) THEN
+    SELECT sal_cuenta INTO saldo FROM cuenta WHERE CUENTA.cod_cuenta=:NEW.cod_cuenta;
+    SELECT nom_cuenta INTO name FROM cuenta WHERE CUENTA.cod_cuenta=:NEW.cod_cuenta;
+  
+  /*Consignación*/ 
+  IF (:NEW.cod_t_movimiento=1) THEN
+    UPDATE CUENTA
+      SET sal_cuenta= saldo + :NEW.val_movimiento WHERE CUENTA.cod_cuenta = :NEW.cod_cuenta;
+        imprimir (NAME||' --> CONSIGNACIÓN --> '||:NEW.val_movimiento||' --> SALDO --> '||(saldo + :NEW.val_movimiento));
+  END IF;
+
+  /*Retiro*/
+  IF (:NEW.cod_t_movimiento=2) THEN
+    IF (SALDO < :NEW.val_movimiento) THEN
+      imprimir ('¡SALDO INSUFICIENTE!');     
+    ELSE
       UPDATE CUENTA
-        SET sal_cuenta = :NEW.val_movimiento + sal_cuenta
-        WHERE CUENTA.cod_cuenta = :NEW.cod_cuenta;
-    END IF; 
-  END;
+        SET sal_cuenta= saldo - :NEW.val_movimiento WHERE Cuenta.cod_cuenta = :NEW.cod_cuenta;
+          imprimir (NAME||' --> RETIRO --> '||:NEW.val_movimiento||' --> SALDO --> '||(saldo - :NEW.val_movimiento));
+    END IF;
+  END IF;
+  
+  /*Consulta*/
+  IF (:NEW.cod_t_movimiento=3) THEN
+    imprimir (NAME||' --> SALDO --> '||SALDO);
+  END IF;
+ 
+END;
+
+INSERT INTO MOVIMIENTO VALUES(6, 1, 3, sysdate, 500);
+
+-----------------
+
+
 
 
