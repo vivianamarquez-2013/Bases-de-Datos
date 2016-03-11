@@ -163,7 +163,10 @@ SELECT imprimir('Hello mundo! :-)');
 
 -----TRIGGER
 
-CREATE OR REPLACE FUNCTION ai_movimiento() RETURNS TRIGGER AS $example_table$
+CREATE TRIGGER example_trigger AFTER INSERT ON MOVIMIENTO
+FOR EACH ROW EXECUTE PROCEDURE ai_movimiento();
+
+CREATE OR REPLACE FUNCTION ai_movimiento() RETURNS TRIGGER AS $$
   DECLARE
       NAME CUENTA.nom_cuenta%type;
       SALDO CUENTA.sal_cuenta%type;
@@ -171,11 +174,13 @@ CREATE OR REPLACE FUNCTION ai_movimiento() RETURNS TRIGGER AS $example_table$
     SELECT sal_cuenta INTO saldo FROM cuenta WHERE CUENTA.cod_cuenta=new.cod_cuenta;
     SELECT nom_cuenta INTO name FROM cuenta WHERE CUENTA.cod_cuenta=new.cod_cuenta;
   
+  
+  
   IF (new.cod_t_movimiento=3) THEN
     RAISE NOTICE '% --> SALDO --> %', NAME, SALDO;
   END IF;
  
 END;
-$example_table$ LANGUAGE plpgsql;
+$$ LANGUAGE plpgsql;
 
 INSERT INTO MOVIMIENTO VALUES(1, 1, 1, current_date, 1000);
