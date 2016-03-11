@@ -166,21 +166,39 @@ SELECT imprimir('Hello mundo! :-)');
 CREATE TRIGGER example_trigger AFTER INSERT ON MOVIMIENTO
 FOR EACH ROW EXECUTE PROCEDURE ai_movimiento();
 
-CREATE OR REPLACE FUNCTION ai_movimiento() RETURNS TRIGGER AS $$
+CREATE OR REPLACE FUNCTION ai_movimiento() RETURNS TRIGGER AS $example_table$
   DECLARE
       NAME CUENTA.nom_cuenta%type;
       SALDO CUENTA.sal_cuenta%type;
   BEGIN
     SELECT sal_cuenta INTO saldo FROM cuenta WHERE CUENTA.cod_cuenta=new.cod_cuenta;
     SELECT nom_cuenta INTO name FROM cuenta WHERE CUENTA.cod_cuenta=new.cod_cuenta;
+    
+  /*Consignación*/ 
+  IF (new.cod_t_movimiento=1) THEN
+    UPDATE CUENTA
+      SET sal_cuenta= saldo + new.val_movimiento WHERE CUENTA.cod_cuenta = new.cod_cuenta;
+        RAISE NOTICE '% --> CONSIGNACIÓN --> % --> SALDO --> %', NAME, new.val_movimiento, (saldo+new.val_movimiento);
+  END IF;
   
-  
-  
+  /*Retiro*/
+  IF (new.cod_t_movimiento=2) THEN
+    IF (SALDO < new.val_movimiento) THEN
+      SELECT imprimir ('¡SALDO INSUFICIENTE!');     
+    ELSE
+      UPDATE CUENTA
+        SET sal_cuenta= saldo - new.val_movimiento WHERE Cuenta.cod_cuenta = new.cod_cuenta;
+          RAISE NOTICE '% --> RETIRO --> % --> SALDO --> %', NAME, new.val_movimiento, (saldo-new.val_movimiento);
+    END IF;
+  END IF;
+    
+  /*Consulta*/  
   IF (new.cod_t_movimiento=3) THEN
     RAISE NOTICE '% --> SALDO --> %', NAME, SALDO;
   END IF;
- 
-END;
-$$ LANGUAGE plpgsql;
+  
+  RETURN NEW;
+  END;
+$example_table$ LANGUAGE plpgsql;
 
-INSERT INTO MOVIMIENTO VALUES(1, 1, 1, current_date, 1000);
+INSERT INTO MOVIMIENTO VALUES(4, 1, 3, current_date, 1000);
