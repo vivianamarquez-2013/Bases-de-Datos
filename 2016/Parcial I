@@ -1,0 +1,123 @@
+CREATE OR REPLACE PACKAGE PB
+  IS 
+    PROCEDURE imprimir(cadena varchar);
+    PROCEDURE LXU;
+    FUNCTION LXA(cod_autor_dado number) return varchar;
+    PROCEDURE LXC;
+END PB;
+
+create or replace PACKAGE BODY PB IS 
+    
+    PROCEDURE imprimir (cadena varchar) IS
+        BEGIN
+          dbms_output.put_line(cadena);
+        END;
+
+    PROCEDURE LXU IS
+      CURSOR CURSOR_LXU IS
+        SELECT
+          nom_usuario, count(cod_prestamo) as NO_LIBROS_PRESTADOS
+        FROM
+          PRESTAMO, LIBRO, USUARIO
+        WHERE
+          PRESTAMO.cod_libro=LIBRO.cod_libro AND
+          PRESTAMO.cod_usuario=USUARIO.cod_usuario
+        GROUP BY nom_usuario;
+      REGISTRO cursor_lxu%rowtype;
+      BEGIN
+        OPEN CURSOR_lxu;
+          LOOP
+             FETCH CURSOR_lxu INTO REGISTRO;
+             EXIT WHEN CURSOR_lxu%NOTFOUND;
+             PB.imprimir(REGISTRO.nom_usuario||' ---> '||REGISTRO.NO_LIBROS_PRESTADOS);
+          END LOOP;
+         CLOSE CURSOR_lxu;
+     END;
+
+   FUNCTION LXA (cod_autor_dado number) RETURN varchar IS
+   
+    nombre AUTOR.nom_autor%type;
+    NO_LIBROS_PRESTADOS PRESTAMO.cod_prestamo%type;
+    BEGIN
+        SELECT
+          nom_autor, count(cod_prestamo) into nombre, NO_LIBROS_PRESTADOS
+        FROM
+          PRESTAMO, LIBRO, AUTOR
+        WHERE
+          PRESTAMO.cod_libro=LIBRO.cod_libro AND
+          LIBRO.cod_autor=AUTOR.cod_autor and
+          AUTOR.cod_autor=cod_autor_dado
+        GROUP BY nom_autor;
+        RETURN(nombre||' ---> '||NO_LIBROS_PRESTADOS); 
+     END;
+
+    PROCEDURE LXC IS
+      CURSOR CURSOR_LXC IS
+        SELECT
+          nom_ciudad as NOMBRE_CIUDAD, count(cod_prestamo) as NO_LIBROS_PRESTADOS
+        FROM
+          PRESTAMO, USUARIO, CIUDAD
+        WHERE
+          PRESTAMO.cod_usuario=USUARIO.cod_usuario AND
+          USUARIO.cod_ciudad=CIUDAD.cod_ciudad     
+        GROUP BY nom_ciudad;
+      REGISTRO cursor_lxc%rowtype;
+      BEGIN
+        OPEN CURSOR_lxc;
+        FETCH CURSOR_lxc INTO REGISTRO;
+          WHILE (CURSOR_lxc%found) LOOP
+             PB.imprimir(REGISTRO.NOMBRE_CIUDAD||' ---> '||REGISTRO.NO_LIBROS_PRESTADOS);
+             FETCH CURSOR_lxc INTO REGISTRO;
+          END LOOP;
+         CLOSE CURSOR_lxc;
+     END;
+
+END PB;
+
+BEGIN
+  PB.LXU;
+END;
+
+BEGIN
+PB.imprimir(PB.LXA(2));
+END;
+
+BEGIN
+  PB.LXA;
+END;
+
+
+****************************************************************************************************************************************************************************************************************************
+
+
+
+
+CREATE TABLE AUDI_PRESTAMO
+( cod_prestamo number,
+  cod_usuario_viejo number,
+  cod_usuario_nuevo number,
+  cod_libro_viejo number,
+  cod_libro_nuevo number,
+  fecha_delito date,
+  esquema varchar2(100),
+  ip_delito varchar2(30),
+  tipo varchar2(10)
+);
+
+create or replace TRIGGER TT_PRESTAMO
+  BEFORE INSERT OR UPDATE OR DELETE ON PRESTAMO 
+  FOR EACH ROW
+  BEGIN
+    IF INSERTING THEN 
+      INSERT INTO AUDI_PRESTAMO VALUES (:NEW.cod_prestamo, NULL, :NEW.cod_usuario, NULL, :NEW.cod_libro, sysdate,  sys_context('USERENV', 'CURRENT_SCHEMA'),sys_context('USERENV', 'IP_ADDRESS'), 'INSERT');
+    END IF;  
+    IF DELETING THEN
+      INSERT INTO AUDI_PRESTAMO VALUES (:OLD.cod_prestamo, :OLD.cod_usuario, NULL, :OLD.cod_libro, NULL, sysdate,  sys_context('USERENV', 'CURRENT_SCHEMA'),sys_context('USERENV', 'IP_ADDRESS'), 'DELETE');
+    END IF;
+    IF UPDATING THEN
+      INSERT INTO AUDI_PRESTAMO VALUES (:NEW.cod_prestamo, :OLD.cod_usuario, :NEW.cod_usuario, :OLD.cod_libro, :NEW.cod_libro, sysdate,  sys_context('USERENV', 'CURRENT_SCHEMA'),sys_context('USERENV', 'IP_ADDRESS'), 'UPDATE');
+    END IF;
+  END;
+
+insert into prestamo values (51,1,1);
+
