@@ -103,8 +103,29 @@ END;
 
 INSERT INTO MOVIMIENTO VALUES(6, 1, 3, sysdate, 500);
 
-------------------------- POSTGRE
+------------------------- POSTGRES
 
+CREATE TABLE CUENTA
+( cod_cuenta numberic,
+  nom_cuenta varchar2(30),
+  sal_cuenta number,
+  PRIMARY KEY (cod_cuenta)
+);
+
+CREATE TABLE MOVIMIENTO
+( cod_movimiento number,
+  cod_cuenta number,
+  cod_t_movimiento number,
+  fecha_movimiento date,
+  val_movimiento number,
+  PRIMARY KEY (cod_movimiento)
+);
+
+CREATE TABLE T_MOVIMIENTO
+( cod_t_movimiento number,
+  nom_t_movimiento varchar2(30),
+  PRIMARY KEY (cod_t_movimiento)
+);
 
 
 
