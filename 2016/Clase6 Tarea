@@ -211,6 +211,7 @@ CREATE TRIGGER AI_MOVIMIENTO ON movimiento FOR INSERT AS
   DECLARE @saldo numeric(20,0);
   DECLARE @codigo numeric(20,0);
   DECLARE @codigo_mov numeric(20,0);
+  DECLARE @valor numeric(20,0);
 
   SELECT @codigo = i.cod_cuenta from inserted i;
   SELECT @codigo_mov = i.cod_t_movimiento from inserted i;
@@ -218,6 +219,20 @@ CREATE TRIGGER AI_MOVIMIENTO ON movimiento FOR INSERT AS
   SELECT nom_cuenta into @nombre FROM CUENTA WHERE CUENTA.cod_cuenta=@codigo;
 
   set @audit_action='Inserted Record -- After Insert Trigger.';
+  
+  IF @codigo_mov = 1
+  BEGIN
+    UPDATE CUENTA
+      SET @saldo= @saldo + @i.val_movimiento ;
+        PRINT @nombre+' --> CONSIGNACIÓN --> '+@i.val_movimiento+' --> SALDO --> '+(@saldo + @i.val_movimiento));
+  END;
+  
+  IF @codigo_mov = 2
+  BEGIN
+    UPDATE CUENTA
+      SET @saldo= @saldo - @i.val_movimiento ;
+        PRINT @nombre+' --> RETIRO --> '+@i.val_movimiento+' --> SALDO --> '+(@saldo - @i.val_movimiento));
+  END;
   
   IF @codigo_mov = 3
   BEGIN
