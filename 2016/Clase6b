@@ -65,7 +65,7 @@ SELECT * FROM T_MOVIMIENTO;
 
 SELECT * FROM CUENTA;
 
-SELECT * FROM T_MOVIMIENTO;
+
 CREATE OR REPLACE TRIGGER AI_MOVIMIENTO
   AFTER INSERT ON MOVIMIENTO
   FOR EACH ROW
@@ -106,26 +106,83 @@ INSERT INTO MOVIMIENTO VALUES(6, 1, 3, sysdate, 500);
 ------------------------- POSTGRES
 
 CREATE TABLE CUENTA
-( cod_cuenta numberic,
-  nom_cuenta varchar2(30),
-  sal_cuenta number,
+( cod_cuenta numeric,
+  nom_cuenta text,
+  sal_cuenta numeric,
   PRIMARY KEY (cod_cuenta)
 );
 
 CREATE TABLE MOVIMIENTO
-( cod_movimiento number,
-  cod_cuenta number,
-  cod_t_movimiento number,
+( cod_movimiento numeric,
+  cod_cuenta numeric,
+  cod_t_movimiento numeric,
   fecha_movimiento date,
-  val_movimiento number,
+  val_movimiento numeric,
   PRIMARY KEY (cod_movimiento)
 );
 
 CREATE TABLE T_MOVIMIENTO
-( cod_t_movimiento number,
-  nom_t_movimiento varchar2(30),
+( cod_t_movimiento numeric,
+  nom_t_movimiento text,
   PRIMARY KEY (cod_t_movimiento)
 );
 
+ALTER TABLE MOVIMIENTO
+  add CONSTRAINT cod_cuenta_fk
+  FOREIGN KEY (cod_cuenta)
+  REFERENCES CUENTA(cod_cuenta)
+;
 
+ALTER TABLE MOVIMIENTO
+  add CONSTRAINT cod_t_movimiento_fk
+  FOREIGN KEY (cod_t_movimiento)
+  REFERENCES T_MOVIMIENTO(cod_t_movimiento)
+;
 
+INSERT INTO CUENTA VALUES(1, 'Paola', 0);
+
+INSERT INTO CUENTA VALUES(2, 'Carolina', 0);
+
+INSERT INTO CUENTA VALUES(3, 'Jessica', 0);
+
+INSERT INTO CUENTA VALUES(4, 'Laura', 0);
+
+INSERT INTO T_MOVIMIENTO VALUES(1, 'Consignación');
+
+INSERT INTO T_MOVIMIENTO VALUES(2, 'Retiro');
+
+INSERT INTO T_MOVIMIENTO VALUES(3, 'Consultar');
+
+-----FUNCIÓN IMPRIMIR
+
+create function imprimir(text) returns void as 
+$$ begin raise notice '%', $1; end 
+$$ language plpgsql; 
+
+SELECT imprimir('Hello mundo! :-)');
+
+-----TRIGGER
+
+CREATE OR REPLACE FUNCTION auditlogfunc() RETURNS TRIGGER AS $example_table$
+    BEGIN
+        INSERT INTO AUDIT(EMP_ID, ENTRY_DATE) VALUES (new.ID, current_timestamp);
+        RETURN NEW;
+    END;
+$example_table$ LANGUAGE plpgsql;
+
+CREATE OR REPLACE FUNCTION ai_movimiento() RETURNS TRIGGER AS $example_table$
+  DECLARE
+      NAME CUENTA.nom_cuenta%type;
+      SALDO CUENTA.sal_cuenta%type;
+  BEGIN
+    SELECT sal_cuenta INTO saldo FROM cuenta WHERE CUENTA.cod_cuenta=new.cod_cuenta;
+    SELECT nom_cuenta INTO name FROM cuenta WHERE CUENTA.cod_cuenta=new.cod_cuenta;
+  
+  IF (new.cod_t_movimiento=3) THEN
+    RAISE NOTICE '% --> SALDO --> %', NAME, SALDO;
+  END IF;
+ 
+END;
+$example_table$ LANGUAGE plpgsql;
+
+INSERT INTO MOVIMIENTO VALUES(1, 1, 1, current_date, 1000);
