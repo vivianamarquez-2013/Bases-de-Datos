@@ -205,41 +205,48 @@ INSERT INTO MOVIMIENTO VALUES(4, 1, 3, current_date, 1000);
 
 ------------------------- SQL SERVER
 
-CREATE TRIGGER AI_MOVIMIENTO ON movimiento FOR INSERT AS
+CREATE TRIGGER [dbo].[AI_MOVIMIENTO] ON [dbo].[MOVIMIENTO] FOR INSERT AS
 
   DECLARE @nombre varchar(30);
   DECLARE @saldo numeric(20,0);
   DECLARE @codigo numeric(20,0);
   DECLARE @codigo_mov numeric(20,0);
   DECLARE @valor numeric(20,0);
+  DECLARE @dinero numeric(20,0);
 
   SELECT @codigo = i.cod_cuenta from inserted i;
   SELECT @codigo_mov = i.cod_t_movimiento from inserted i;
-  SELECT sal_cuenta into @saldo FROM CUENTA WHERE CUENTA.cod_cuenta=@codigo;
-  SELECT nom_cuenta into @nombre FROM CUENTA WHERE CUENTA.cod_cuenta=@codigo;
+  SELECT @saldo = sal_cuenta FROM CUENTA WHERE CUENTA.cod_cuenta=@codigo;
+  SELECT @nombre = nom_cuenta FROM CUENTA WHERE CUENTA.cod_cuenta=@codigo;
+  SELECT @dinero=val_movimiento from inserted;
 
   set @audit_action='Inserted Record -- After Insert Trigger.';
   
   IF @codigo_mov = 1
   BEGIN
     UPDATE CUENTA
-      SET @saldo= @saldo + @i.val_movimiento ;
-        PRINT @nombre+' --> CONSIGNACIÓN --> '+@i.val_movimiento+' --> SALDO --> '+(@saldo + @i.val_movimiento));
+      SET sal_cuenta= @saldo + @dinero WHERE CUENTA.cod_cuenta=@codigo;
+        PRINT @nombre+' --> CONSIGNACIÓN --> '+STR(@dinero)+' --> SALDO --> '+STR(@saldo + @dinero));
   END;
   
   IF @codigo_mov = 2
   BEGIN
-    UPDATE CUENTA
-      SET @saldo= @saldo - @i.val_movimiento ;
-        PRINT @nombre+' --> RETIRO --> '+@i.val_movimiento+' --> SALDO --> '+(@saldo - @i.val_movimiento));
+    IF @saldo < @dinero
+      BEGIN
+        PRINT '¡Saldo insuficiente!';
+      END;
+    ELSE
+      BEGIN
+        UPDATE CUENTA
+          SET sal_cuenta = @saldo - @dinero WHERE CUENTA.cod_cuenta=@codigo;
+          PRINT @nombre + ' --> RETIRO --> ' +STR(@dinero)+ ' --> SALDO --> ' +@STR(@saldo - @dinero);
   END;
   
   IF @codigo_mov = 3
   BEGIN
-    PRINT @nombre + ' —> SALDO —> ‘ @saldo;
+    PRINT @nombre + ' —> SALDO —> ‘ +STR(@saldo);
   END;
 
-  PRINT 'AFTER INSERT trigger fired.'
 
 GO
 
