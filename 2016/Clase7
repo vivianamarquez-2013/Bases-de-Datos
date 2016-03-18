@@ -95,3 +95,23 @@ SELECT * FROM CUENTA;
 UPDATE CUENTA
   SET sal_cuenta = 0
   
+CREATE OR REPLACE PROCEDURE RECUP IS
+  MAXIMO number;
+CURSOR CURSOR_R IS
+        SELECT 
+            * 
+        FROM
+            MOVIMIENTO;
+BEGIN
+       SELECT MOVIMIENTO.cod_movimiento into maximo from movimiento where cod_movimiento=(select max(cod_movimiento) from movimiento);
+       FOR REGISTRO IN CURSOR_R LOOP
+         maximo := maximo+1;
+         INSERT INTO MOVIMIENTO VALUES(maximo, REGISTRO.COD_CUENTA, REGISTRO.COD_T_MOVIMIENTO, sysdate, REGISTRO.VAL_MOVIMIENTO);
+       END LOOP;
+END;
+
+BEGIN
+  RECUP;
+END;
+
+select * from cuenta;
