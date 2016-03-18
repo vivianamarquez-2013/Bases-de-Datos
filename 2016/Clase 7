@@ -1,0 +1,93 @@
+delete from movimiento;
+delete from cuenta;
+delete from t_movimiento;
+
+BEGIN
+
+INSERT INTO CUENTA VALUES(1, 'Paola', 0);
+
+INSERT INTO CUENTA VALUES(2, 'Carolina', 0);
+
+INSERT INTO CUENTA VALUES(3, 'Jessica', 0);
+
+INSERT INTO CUENTA VALUES(4, 'Laura', 0);
+
+INSERT INTO T_MOVIMIENTO VALUES(1, 'Consignación');
+
+INSERT INTO T_MOVIMIENTO VALUES(2, 'Retiro');
+
+INSERT INTO T_MOVIMIENTO VALUES(3, 'Consultar');
+
+END;
+
+
+CREATE OR REPLACE TRIGGER AI_MOVIMIENTO
+  AFTER INSERT ON MOVIMIENTO
+  FOR EACH ROW
+  DECLARE
+      NAME CUENTA.nom_cuenta%type;
+      SALDO CUENTA.sal_cuenta%type;
+  BEGIN
+    SELECT sal_cuenta INTO saldo FROM cuenta WHERE CUENTA.cod_cuenta=:NEW.cod_cuenta;
+    SELECT nom_cuenta INTO name FROM cuenta WHERE CUENTA.cod_cuenta=:NEW.cod_cuenta;
+  
+  /*Consignación*/ 
+  IF (:NEW.cod_t_movimiento=1) THEN
+    IF (:NEW.val_movimiento < 0) THEN
+      imprimir('¡Movimiento Prohíbido!');
+    ELSE
+      UPDATE CUENTA
+        SET sal_cuenta= saldo + :NEW.val_movimiento WHERE CUENTA.cod_cuenta = :NEW.cod_cuenta;
+          imprimir (NAME||' --> CONSIGNACIÓN --> '||:NEW.val_movimiento||' --> SALDO --> '||(saldo + :NEW.val_movimiento));
+    END IF;
+  END IF;
+
+  /*Retiro*/
+  IF (:NEW.cod_t_movimiento=2) THEN
+    IF (SALDO < :NEW.val_movimiento) THEN
+      imprimir ('¡SALDO INSUFICIENTE!');     
+    ELSE
+      UPDATE CUENTA
+        SET sal_cuenta= saldo - :NEW.val_movimiento WHERE Cuenta.cod_cuenta = :NEW.cod_cuenta;
+          imprimir (NAME||' --> RETIRO --> '||:NEW.val_movimiento||' --> SALDO --> '||(saldo - :NEW.val_movimiento));
+    END IF;
+  END IF;
+  
+  /*Consulta*/
+  IF (:NEW.cod_t_movimiento=3) THEN
+    imprimir (NAME||' --> SALDO --> '||SALDO);
+  END IF;
+ 
+END;
+
+BEGIN
+
+INSERT INTO MOVIMIENTO VALUES(1, 1, 1, sysdate, 1000000);
+
+INSERT INTO MOVIMIENTO VALUES(2, 2, 2, sysdate, 1000000);
+
+INSERT INTO MOVIMIENTO VALUES(3, 1, 1, sysdate, -2000000);
+
+INSERT INTO MOVIMIENTO VALUES(4, 2, 1, sysdate, -2000000);
+
+INSERT INTO MOVIMIENTO VALUES(5, 3, 1, sysdate, 2000000);
+
+INSERT INTO MOVIMIENTO VALUES(6, 1, 2, sysdate, 1100000);
+
+INSERT INTO MOVIMIENTO VALUES(7, 2, 1, sysdate, 1000000);
+
+INSERT INTO MOVIMIENTO VALUES(8, 3, 1, sysdate, -1000000);
+
+INSERT INTO MOVIMIENTO VALUES(9, 1, 1, sysdate, 2000000);
+
+INSERT INTO MOVIMIENTO VALUES(10, 3, 2, sysdate, 1000000);
+
+INSERT INTO MOVIMIENTO VALUES(11, 3, 2, sysdate, 1000000);
+
+INSERT INTO MOVIMIENTO VALUES(12, 2, 2, sysdate, 3000000);
+
+INSERT INTO MOVIMIENTO VALUES(13, 1, 2, sysdate, 2000000);
+
+END;
+
+SELECT * FROM CUENTA;
