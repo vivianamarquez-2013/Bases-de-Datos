@@ -1,0 +1,47 @@
+CREATE TABLE MASCOTA
+( cod_mascota number,
+  nom_mascota varchar2(30),
+  tipo_mascota varchar2(30),
+  nom_dueno varchar2(30),
+  PRIMARY KEY (cod_mascota)
+);
+
+
+BEGIN
+
+INSERT INTO MASCOTA VALUES(1, 'Keke', 'gato', 'Pablo');
+
+INSERT INTO MASCOTA VALUES(2, 'Kiki', 'perro', 'Pedro');
+
+INSERT INTO MASCOTA VALUES(3, 'Koko', 'girafa', 'Pablo');
+
+INSERT INTO MASCOTA VALUES(4, 'Kuku', 'pájaro', 'Picasso');
+
+INSERT INTO MASCOTA VALUES(5, 'Kosko', 'gato', 'Prisco');
+
+END;
+
+-----
+
+
+CREATE VIEW VISTA1 
+  AS 
+    SELECT cod_mascota, nom_mascota FROM mascota;
+
+
+SELECT * FROM VISTA1;
+
+UPDATE VISTA1
+  SET nom_mascota='BLUE' WHERE cod_mascota=3;
+  
+
+CREATE OR REPLACE VIEW VISTA1
+  (codigo, nombre, dueno)
+  AS
+    SELECT
+      cod_mascota, nom_mascota, nom_dueno
+    FROM
+      mascota;  
+      
+DELETE FROM VISTA1 WHERE codigo=3;
+
