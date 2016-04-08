@@ -45,3 +45,23 @@ CREATE OR REPLACE VIEW VISTA1
       
 DELETE FROM VISTA1 WHERE codigo=3;
 
+
+CREATE OR REPLACE VIEW VISTA1
+  (codigo, nombre, tipo, dueno)
+  AS
+    SELECT
+      cod_mascota, nom_mascota, tipo_mascota, nom_dueno
+    FROM
+      mascota
+    WHERE tipo_mascota='gato'
+    WITH check option;
+    
+    
+INSERT INTO VISTA1 VALUES(6, 'Kiski', 'perro', 'Undeclare');
+
+CREATE OR REPLACE VIEW VISTA2
+  AS 
+    SELECT * FROM VISTA1
+    WITH READ ONLY;
+    
+
