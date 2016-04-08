@@ -65,3 +65,63 @@ CREATE OR REPLACE VIEW VISTA2
     WITH READ ONLY;
     
 
+----------------------------------------------------------
+
+CREATE TABLE CLIENTE_8
+( cod_cliente number,
+  nom_cliente varchar2(30),
+  PRIMARY KEY (cod_cliente)
+);
+
+CREATE TABLE FACTURA_8
+( cod_factura number,
+  cod_cliente number,
+  val_factura number,
+  PRIMARY KEY (cod_factura)
+);
+
+ALTER TABLE FACTURA_8
+  add CONSTRAINT cod_cliente_8_fk
+  FOREIGN KEY (cod_cliente)
+  REFERENCES CLIENTE(cod_cliente)
+;
+
+
+BEGIN
+
+INSERT INTO CLIENTE_8 VALUES(1, 'JUAN');
+INSERT INTO CLIENTE_8 VALUES(2, 'JOSÉ');
+INSERT INTO CLIENTE_8 VALUES(3, 'JULIO');
+INSERT INTO CLIENTE_8 VALUES(4, 'JAMES');
+
+END;
+
+
+BEGIN
+
+INSERT INTO FACTURA_8 VALUES(1, 1, 1000);
+INSERT INTO FACTURA_8 VALUES(2, 2, 2000);
+INSERT INTO FACTURA_8 VALUES(3, 3, 3000);
+INSERT INTO FACTURA_8 VALUES(4, 4, 4000);
+INSERT INTO FACTURA_8 VALUES(5, 1, 1000);
+INSERT INTO FACTURA_8 VALUES(6, 2, 2000);
+INSERT INTO FACTURA_8 VALUES(7, 3, 3000);
+INSERT INTO FACTURA_8 VALUES(8, 4, 4000);
+INSERT INTO FACTURA_8 VALUES(9, 1, 1000);
+
+END;
+
+
+CREATE OR REPLACE VIEW VISTAC1
+  AS 
+    SELECT 
+      NOM_CLIENTE, SUM(val_factura) as total
+    FROM
+      CLIENTE_8, FACTURA_8
+    WHERE
+      CLIENTE_8.cod_cliente=FACTURA_8.cod_cliente
+      GROUP BY nom_cliente;
+
+SELECT * FROM VISTAC1;
+
+
