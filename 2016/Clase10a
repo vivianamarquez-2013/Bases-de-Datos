@@ -1,0 +1,62 @@
+Práctica PHP
+
+CREATE TABLE FACTURA (COD_FACTURA NUMERIC, NOM_FACTURA TEXT, VAL_FACTURA NUMERIC);
+
+INSERT INTO FACTURA VALUES(1,'JUAN', 3000000);
+INSERT INTO FACTURA VALUES(2,'LUÍS', 4000000);
+INSERT INTO FACTURA VALUES(3,'ANDRÉS', 5000000);
+INSERT INTO FACTURA VALUES(4,'JAIME', 2000000);
+INSERT INTO FACTURA VALUES(5,'SANDRA', 1000000);
+
+SELECT * FROM FACTURA;
+
+conexion_pg1.php
+
+<html>
+<head>
+<title>Ejemplo de Conexión de PHP con PostgreSQL</title>
+</head>
+<body>
+<h1><font color="red"><b>Ejemplo de Conexión de PHP con PostgreSQL</b></font></h1>
+<br>
+<?php
+/* Conexión con la base de datos */
+$conexion=pg_connect("host=localhost port=5432 dbname=VENTAS user=postgres password=1234");
+$sql="select * from factura";
+$resultado_set=pg_Exec($conexion, $sql);
+while($row=pg_fetch_array($resultado_set)){
+	echo $row["cod_factura"]."-->".$row["nom_factura"].$row["val_factura"];
+	echo "<br>";
+}
+pg_close($conexion);
+?>
+</body>
+</html>
+
+
+http://192.168.62.90/conexion_pg_1.php
+
+
+<html>
+<head>
+<title>Ejemplo de Conexión de PHP con PostgreSQL</title>
+<link rel="stylesheet" href="style.css">
+
+</head>
+<body>
+<h1><font color="hotpink"><b>Ejemplo de Conexión de PHP con PostgreSQL</b></font></h1>
+<h2>Esta es la Base de Datos de Juan Camilo desde el PHP de Viviana</h2>
+<br>
+<?PHP
+/* Conexión con la base de datos */
+$conexion=pg_connect("host=192.168.62.90 port=5432 dbname= ventas user=postgres password=1234");
+$sql="select * from factura";
+$resultado_set=pg_Exec($conexion, $sql);
+while($row=pg_fetch_array($resultado_set)){
+	echo $row["cod_factura"]." &nbsp&nbsp ".$row["nom_factura"]." &nbsp&nbsp ".$row["val_factura"]."<br>";
+	echo "<br>";
+}
+pg_close($conexion);
+?>
+</body>
+</html>
