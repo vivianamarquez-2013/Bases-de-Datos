@@ -36,6 +36,7 @@ pg_close($conexion);
 
 http://192.168.62.90/conexion_pg_1.php
 
+http://localhost/conexion_pg1.php
 
 <html>
 <head>
