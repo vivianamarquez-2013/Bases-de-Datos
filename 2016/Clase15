@@ -1,0 +1,79 @@
+DECLARE 
+  VALOR_NEGATIVO EXCEPTION;
+BEGIN
+FOR VALOR IN REVERSE -4..10 LOOP
+   dbms_output.put_line(VALOR);
+   IF VALOR < 0 THEN 
+     RAISE VALOR_NEGATIVO;
+   END IF;
+END LOOP;
+EXCEPTION
+  WHEN VALOR_NEGATIVO THEN
+    dbms_output.put_line('El valor no puede ser negativo');
+END;
+
+
+CREATE TABLE PAISES
+( cod_pais number,
+  nom_pais varchar2(30),
+  con_pais varchar2(30),
+  PRIMARY KEY (cod_pais)
+);
+
+BEGIN
+
+INSERT INTO PAISES VALUES(1, 'Italia', 'Europa');
+INSERT INTO PAISES VALUES(2, 'Francia', 'Europa');
+INSERT INTO PAISES VALUES(3, 'Venezuela', 'América');
+INSERT INTO PAISES VALUES(4, 'Costa Rica', 'América');
+INSERT INTO PAISES VALUES(5, 'China', 'Asia');
+INSERT INTO PAISES VALUES(6, 'Japón', 'Asia');
+
+END;
+
+select * from paises;
+
+BEGIN
+
+INSERT INTO PAISES VALUES (5, 'Ecuador', 'América');
+
+EXCEPTION
+
+  WHEN DUP_VAL_ON_INDEX THEN
+    DBMS_OUTPUT.PUT_LINE('Llave duplicada.');
+
+END;
+
+
+DECLARE
+  mensaje VARCHAR2(255);
+  result NUMBER;
+BEGIN
+  SELECT 1/0 INTO result FROM DUAL;
+--end;
+EXCEPTION
+  WHEN OTHERS THEN
+    mensaje := SQLERRM(SQLCODE);
+    DBMS_OUTPUT.PUT_LINE(mensaje);
+END;
+
+
+DECLARE
+  mensaje VARCHAR2(255);
+BEGIN
+  MENSAJE:=SQLERRM(:NUMERO);
+  DBMS_OUTPUT.PUT_LINE(mensaje);
+END;
+
+
+DECLARE 
+  mensaje VARCHAR2(255);
+BEGIN
+FOR VALOR IN REVERSE -10000..-1 LOOP
+   MENSAJE:=SQLERRM(VALOR);
+  DBMS_OUTPUT.PUT_LINE(mensaje);
+END LOOP;
+END;
+
+
+
