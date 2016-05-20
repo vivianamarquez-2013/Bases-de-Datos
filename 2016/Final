@@ -225,3 +225,40 @@ create or replace TRIGGER AU_LIBRO
     END IF;
   END;
   
+CREATE sequence "REGISTRO_SEQ" 
+
+CREATE trigger "BI_REGISTRO"  
+  before insert on "REGISTRO"              
+  for each row 
+begin  
+  if :NEW."COD_REGISTRO" is null then
+    select "REGISTRO_SEQ".nextval into :NEW."COD_REGISTRO" from sys.dual;
+  end if;
+end;
+
+CREATE sequence "LIBRO_PREST_SEQ" 
+
+CREATE trigger "BI_LIBRO2"  
+  before insert on "LIBRO"              
+  for each row 
+begin  
+  if :NEW."COD_PRESTAMO" is null then
+    select "LIBRO_PREST_SEQ".nextval into :NEW."COD_PRESTAMO" from sys.dual;
+  end if;
+end;
+
+CREATE SEQUENCE ESTUDIANTE_SEQ
+  START WITH 614161001
+  INCREMENT BY 1
+  ORDER
+  NOCACHE;
+  
+CREATE trigger "BI_ESTUDIANTE"  
+  before insert on "ESTUDIANTE"              
+  for each row 
+begin  
+  if :NEW."COD_ESTUDIANTE" is null then
+    select "ESTUDIANTE_SEQ".nextval into :NEW."COD_ESTUDIANTE" from sys.dual;
+  end if;
+end;
+
