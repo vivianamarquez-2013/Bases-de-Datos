@@ -1,0 +1,142 @@
+• Creación de tablas y fk
+
+CREATE TABLE prestamo
+( cod_prestamo number,
+  cod_libro number,
+  cod_estudiante number,
+  cod_modalidad number,
+  fecha_prestamo date,
+  fecha_entrega date,
+  PRIMARY KEY (cod_prestamo)
+);
+
+ALTER TABLE prestamo
+  add CONSTRAINT cod_libro_fk
+  FOREIGN KEY (cod_libro)
+  REFERENCES libro(cod_libro)
+;
+
+ALTER TABLE prestamo
+  add CONSTRAINT cod_estudiante_fk
+  FOREIGN KEY (cod_estudiante)
+  REFERENCES estudiante(cod_estudiante)
+;
+
+ALTER TABLE prestamo
+  add CONSTRAINT cod_modalidad_fk
+  FOREIGN KEY (cod_modalidad)
+  REFERENCES modalidad(cod_modalidad)
+;
+
+CREATE TABLE registro
+( cod_registro number,
+  cantidad_disp number,
+  cod_libro number,
+  PRIMARY KEY (cod_registro)
+);
+
+ALTER TABLE registro
+  add CONSTRAINT cod_libro_fk2
+  FOREIGN KEY (cod_libro)
+  REFERENCES libro(cod_libro)
+;
+
+CREATE TABLE modalidad
+( cod_modalidad number,
+  nom_modalidad varchar2(30),
+  PRIMARY KEY (cod_modalidad)
+);
+
+CREATE TABLE estudiante
+( cod_estudiante number,
+  nom_estudiante varchar2(30),
+  cod_carrera number,
+  cod_record number,
+  PRIMARY KEY (cod_estudiante)
+);
+
+ALTER TABLE estudiante
+  add CONSTRAINT cod_carrera_fk
+  FOREIGN KEY (cod_carrera)
+  REFERENCES carrera(cod_carrera)
+;
+
+CREATE TABLE carrera
+( cod_carrera number,
+  nom_carrera varchar2(30),
+  PRIMARY KEY (cod_carrera)
+);
+
+CREATE TABLE editorial
+( cod_editorial number,
+  nom_editorial varchar2(30),
+  PRIMARY KEY (cod_editorial)
+);
+
+CREATE TABLE idioma
+( cod_idioma number,
+  nom_idioma varchar2(30),
+  PRIMARY KEY (cod_idioma)
+);
+
+CREATE TABLE genero
+( cod_genero number,
+  nom_genero varchar2(30),
+  PRIMARY KEY (cod_genero)
+);
+
+CREATE TABLE autor
+( cod_autor number,
+  nom_autor varchar2(30),
+  PRIMARY KEY (cod_autor)
+);
+
+CREATE TABLE libro
+( cod_libro number,
+  nom_libro varchar2(30),
+  cod_autor number,
+  cod_genero number,
+  cod_idioma number,
+  cod_editorial number,
+  cod_prestamo number,
+  cod_registro number,
+  PRIMARY KEY (cod_libro)
+);
+
+ALTER TABLE libro
+  add CONSTRAINT cod_autor_fk
+  FOREIGN KEY (cod_autor)
+  REFERENCES autor(cod_autor)
+;
+
+ALTER TABLE libro
+  add CONSTRAINT cod_genero_fk
+  FOREIGN KEY (cod_genero)
+  REFERENCES genero(cod_genero)
+;
+
+ALTER TABLE libro
+  add CONSTRAINT cod_idioma_fk
+  FOREIGN KEY (cod_idioma)
+  REFERENCES idioma(cod_idioma)
+;
+
+ALTER TABLE libro
+  add CONSTRAINT cod_editorial_fk
+  FOREIGN KEY (cod_editorial)
+  REFERENCES editorial(cod_editorial)
+;
+
+ALTER TABLE libro
+  add CONSTRAINT cod_prestamo_fk
+  FOREIGN KEY (cod_prestamo)
+  REFERENCES prestamo(cod_prestamo)
+;
+
+ALTER TABLE libro
+  add CONSTRAINT cod_registro_fk
+  FOREIGN KEY (cod_registro)
+  REFERENCES registro(cod_registro)
+;
+
+• 
