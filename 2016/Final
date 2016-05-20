@@ -139,4 +139,89 @@ ALTER TABLE libro
   REFERENCES registro(cod_registro)
 ;
 
-• 
+
+
+• Auditadas
+
+CREATE TABLE AUDI_PRESTAMO
+( cod_prestamo number,
+  cod_libro number,
+  cod_estudiante number,
+  cod_modalidad number,
+  fecha_prestamo date,
+  fecha_entrega date,
+  fecha_cambio date,
+  esquema_cambio varchar2(100),
+  ip_cambio varchar2(30),
+  tipo_cambio varchar2(30)
+);
+
+create or replace TRIGGER AU_PRESTAMO
+  BEFORE INSERT OR UPDATE OR DELETE ON PRESTAMO 
+  FOR EACH ROW
+  BEGIN
+    IF INSERTING THEN 
+      INSERT INTO AUDI_PRESTAMO VALUES (:NEW.cod_prestamo, :NEW.cod_libro, :NEW.cod_estudiante, :NEW.cod_modalidad, :NEW.fecha_prestamo, :NEW.fecha_entrega, sysdate,  sys_context('USERENV', 'CURRENT_SCHEMA'),sys_context('USERENV', 'IP_ADDRESS'), 'INSERT');
+    END IF;  
+    IF DELETING THEN
+      INSERT INTO AUDI_PRESTAMO VALUES (:OLD.cod_prestamo, :OLD.cod_libro, :OLD.cod_estudiante, :OLD.cod_modalidad, :OLD.fecha_prestamo, :OLD.fecha_entrega, sysdate,  sys_context('USERENV', 'CURRENT_SCHEMA'),sys_context('USERENV', 'IP_ADDRESS'), 'DELETE');
+    END IF;
+    IF UPDATING THEN
+      INSERT INTO AUDI_PRESTAMO VALUES (:OLD.cod_prestamo, :OLD.cod_libro, :OLD.cod_estudiante, :OLD.cod_modalidad, :OLD.fecha_prestamo, :OLD.fecha_entrega, sysdate,  sys_context('USERENV', 'CURRENT_SCHEMA'),sys_context('USERENV', 'IP_ADDRESS'), 'UPDATE');
+    END IF;
+  END;
+
+CREATE TABLE AUDI_ESTUDIANTE
+( cod_estudiante number,
+  nom_estudiante varchar2(30),
+  cod_carrera number,
+  cod_carrera_nuevo number,
+  cod_record number,
+  cod_record_nuevo number,
+  fecha_cambio date,
+  esquema_cambio varchar2(100),
+  ip_cambio varchar2(30),
+  tipo_cambio varchar2(30)
+);
+
+create or replace TRIGGER AU_ESTUDIANTE
+  BEFORE INSERT OR UPDATE OR DELETE ON ESTUDIANTE 
+  FOR EACH ROW
+  BEGIN
+    IF INSERTING THEN 
+      INSERT INTO AUDI_ESTUDIANTE VALUES (:NEW.cod_estudiante, :NEW.nom_estudiante, :NEW.cod_carrera, NULL, :NEW.cod_record, NULL, sysdate, sys_context('USERENV', 'CURRENT_SCHEMA'),sys_context('USERENV', 'IP_ADDRESS'), 'INSERT');
+    END IF;  
+    IF DELETING THEN
+      INSERT INTO AUDI_ESTUDIANTE VALUES (:OLD.cod_estudiante, :OLD.nom_estudiante, :OLD.cod_carrera, NULL, :OLD.cod_record, NULL, sysdate, sys_context('USERENV', 'CURRENT_SCHEMA'),sys_context('USERENV', 'IP_ADDRESS'), 'INSERT');
+    END IF;
+    IF UPDATING THEN
+      INSERT INTO AUDI_ESTUDIANTE VALUES (:OLD.cod_estudiante, :OLD.nom_estudiante, :OLD.cod_carrera, :NEW.cod_carrera, :OLD.cod_record, :NEW.cod_record, sysdate, sys_context('USERENV', 'CURRENT_SCHEMA'),sys_context('USERENV', 'IP_ADDRESS'), 'INSERT');
+    END IF;
+  END;
+
+CREATE TABLE AUDI_LIBRO
+( cod_libro number,
+  nom_libro varchar2(30),
+  cod_registro number,
+  cod_registro_nuevo number,
+  fecha_cambio date,
+  esquema_cambio varchar2(100),
+  ip_cambio varchar2(30),
+  tipo_cambio varchar2(30)
+);
+
+create or replace TRIGGER AU_LIBRO
+  BEFORE INSERT OR UPDATE OR DELETE ON LIBRO
+  FOR EACH ROW
+  BEGIN
+    IF INSERTING THEN 
+      INSERT INTO AUDI_LIBRO VALUES (:NEW.cod_libro, :NEW.nom_libro, :NEW.cod_registro, NULL, sysdate, sys_context('USERENV', 'CURRENT_SCHEMA'),sys_context('USERENV', 'IP_ADDRESS'), 'INSERT');
+    END IF;  
+    IF DELETING THEN
+      INSERT INTO AUDI_LIBRO VALUES (:OLD.cod_libro, :OLD.nom_libro, :OLD.cod_registro, NULL, sysdate, sys_context('USERENV', 'CURRENT_SCHEMA'),sys_context('USERENV', 'IP_ADDRESS'), 'INSERT');
+    END IF;
+    IF UPDATING THEN
+      INSERT INTO AUDI_LIBRO VALUES (:OLD.cod_libro, :OLD.nom_libro, :OLD.cod_registro, :NEW.cod_registro, sysdate, sys_context('USERENV', 'CURRENT_SCHEMA'),sys_context('USERENV', 'IP_ADDRESS'), 'INSERT');
+    END IF;
+  END;
+  
