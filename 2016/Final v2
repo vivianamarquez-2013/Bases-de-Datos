@@ -1,0 +1,362 @@
+CREATE TABLE prestamo
+( cod_prestamo number,
+  cod_libro number,
+  cod_estudiante number,
+  cod_modalidad number,
+  fecha date,
+  PRIMARY KEY (cod_prestamo)
+);
+
+CREATE TABLE modalidad
+(  cod_modalidad number,
+   nom_modalidad varchar2(30),
+   PRIMARY KEY (cod_modalidad)
+);
+
+CREATE TABLE estudiante
+( cod_estudiante number,
+  nom_estudiante varchar2(30),
+  cod_carrera number,
+  cod_record number,
+  PRIMARY KEY (cod_estudiante)
+);
+
+CREATE TABLE carrera
+( cod_carrera number,
+  nom_carrera varchar2(30),
+  PRIMARY KEY (cod_carrera)
+);
+
+CREATE TABLE imagen
+( cod_imagen number,
+  url_imagen varchar2(200),
+  PRIMARY KEY (cod_imagen)
+);
+
+CREATE TABLE editorial
+( cod_editorial number,
+  nom_editorial varchar2(30),
+  PRIMARY KEY (cod_editorial)
+);
+
+CREATE TABLE idioma
+( cod_idioma number,
+  nom_idioma varchar2(30),
+  PRIMARY KEY (cod_idioma)
+);
+
+CREATE TABLE genero
+( cod_genero number,
+  nom_genero varchar2(30),
+  PRIMARY KEY (cod_genero)
+);
+
+CREATE TABLE autor
+( cod_autor number,
+  nom_autor varchar2(30),
+  PRIMARY KEY (cod_autor)
+);
+
+CREATE TABLE libro
+( cod_libro number,
+  nom_libro varchar2(30),
+  cod_autor number,
+  cod_genero number,
+  cod_idioma number,
+  cod_editorial number,
+  cod_imagen number,
+  cantidad_disponible number,
+  PRIMARY KEY (cod_libro)
+);
+
+ALTER TABLE prestamo
+  add CONSTRAINT cod_libro_fk
+  FOREIGN KEY (cod_libro)
+  REFERENCES libro(cod_libro)
+;
+
+ALTER TABLE prestamo
+  add CONSTRAINT cod_estudiante_fk
+  FOREIGN KEY (cod_estudiante)
+  REFERENCES estudiante(cod_estudiante)
+;
+
+ALTER TABLE prestamo
+  add CONSTRAINT cod_modalidad_fk
+  FOREIGN KEY (cod_modalidad)
+  REFERENCES modalidad(cod_modalidad)
+;
+
+ALTER TABLE estudiante
+  add CONSTRAINT cod_carrera_fk
+  FOREIGN KEY (cod_carrera)
+  REFERENCES carrera(cod_carrera)
+;
+
+ALTER TABLE libro
+  add CONSTRAINT cod_autor_fk
+  FOREIGN KEY (cod_autor)
+  REFERENCES autor(cod_autor)
+;
+
+ALTER TABLE libro
+  add CONSTRAINT cod_genero_fk
+  FOREIGN KEY (cod_genero)
+  REFERENCES genero(cod_genero)
+;
+
+ALTER TABLE libro
+  add CONSTRAINT cod_idioma_fk
+  FOREIGN KEY (cod_idioma)
+  REFERENCES idioma(cod_idioma)
+;
+
+ALTER TABLE libro
+  add CONSTRAINT cod_editorial_fk
+  FOREIGN KEY (cod_editorial)
+  REFERENCES editorial(cod_editorial)
+;
+
+ALTER TABLE libro
+  add CONSTRAINT cod_imagen_fk
+  FOREIGN KEY (cod_imagen)
+  REFERENCES imagen(cod_imagen)
+;
+
+
+
+•••••••••• Auditadas ••••••••••
+
+CREATE TABLE AUDI_PRESTAMO
+( cod_prestamo number,
+  cod_libro number,
+  cod_estudiante number,
+  cod_modalidad number,
+  fecha date,
+  fecha_DELITO date,
+  esquema_DELITO varchar2(100),
+  ip_DELITO varchar2(30),
+  tipo_DELITO varchar2(30)
+);
+
+create or replace TRIGGER AU_PRESTAMO
+  BEFORE DELETE ON PRESTAMO 
+  FOR EACH ROW
+  BEGIN
+    IF DELETING THEN
+      INSERT INTO AUDI_PRESTAMO VALUES (:OLD.cod_prestamo, :OLD.cod_libro, :OLD.cod_estudiante, :OLD.cod_modalidad, :OLD.fecha, sysdate,  sys_context('USERENV', 'CURRENT_SCHEMA'),sys_context('USERENV', 'IP_ADDRESS'), 'DELETE');
+    END IF;
+  END;
+  
+  
+  
+•••••••••• Secuencias ••••••••••
+  
+CREATE sequence "PRESTAMO_SEQ" 
+
+CREATE trigger "BI_PRESTAMO"  
+  before insert on "PRESTAMO"              
+  for each row 
+begin  
+  if :NEW."COD_PRESTAMO" is null then
+    select "PRESTAMO_SEQ".nextval into :NEW."COD_PRESTAMO" from sys.dual;
+  end if;
+end;
+
+
+CREATE sequence "LIBRO_SEQ" 
+
+CREATE trigger "BI_LIBRO"  
+  before insert on "LIBRO"              
+  for each row 
+begin  
+  if :NEW."COD_LIBRO" is null then
+    select "LIBRO_SEQ".nextval into :NEW."COD_LIBRO" from sys.dual;
+  end if;
+end;
+
+
+CREATE sequence "AUTOR_SEQ" 
+
+CREATE trigger "BI_AUTOR"  
+  before insert on "AUTOR"              
+  for each row 
+begin  
+  if :NEW."COD_AUTOR" is null then
+    select "AUTOR_SEQ".nextval into :NEW."COD_AUTOR" from sys.dual;
+  end if;
+end;
+
+
+CREATE sequence "GENERO_SEQ" 
+
+CREATE trigger "BI_GENERO"  
+  before insert on "GENERO"              
+  for each row 
+begin  
+  if :NEW."COD_GENERO" is null then
+    select "GENERO_SEQ".nextval into :NEW."COD_GENERO" from sys.dual;
+  end if;
+end;
+
+
+CREATE sequence "IDIOMA_SEQ" 
+
+CREATE trigger "BI_IDIOMA"  
+  before insert on "IDIOMA"              
+  for each row 
+begin  
+  if :NEW."COD_IDIOMA" is null then
+    select "IDIOMA_SEQ".nextval into :NEW."COD_IDIOMA" from sys.dual;
+  end if;
+end;
+
+
+CREATE sequence "EDITORIAL_SEQ" 
+
+CREATE trigger "BI_EDITORIAL"  
+  before insert on "EDITORIAL"              
+  for each row 
+begin  
+  if :NEW."COD_EDITORIAL" is null then
+    select "EDITORIAL_SEQ".nextval into :NEW."COD_EDITORIAL" from sys.dual;
+  end if;
+end;
+
+
+CREATE sequence "IMAGEN_SEQ" 
+
+CREATE trigger "BI_IMAGEN"  
+  before insert on "IMAGEN"              
+  for each row 
+begin  
+  if :NEW."COD_IMAGEN" is null then
+    select "IMAGEN_SEQ".nextval into :NEW."COD_IMAGEN" from sys.dual;
+  end if;
+end;
+
+
+CREATE sequence "CARRERA_SEQ" 
+
+CREATE trigger "BI_CARRERA"  
+  before insert on "CARRERA"              
+  for each row 
+begin  
+  if :NEW."COD_CARRERA" is null then
+    select "CARRERA_SEQ".nextval into :NEW."COD_CARRERA" from sys.dual;
+  end if;
+end;
+
+
+CREATE SEQUENCE ESTUDIANTE_SEQ
+  START WITH 614161001
+  INCREMENT BY 1
+  ORDER
+  NOCACHE;
+  
+CREATE trigger "BI_ESTUDIANTE"  
+  before insert on "ESTUDIANTE"              
+  for each row 
+begin  
+  if :NEW."COD_ESTUDIANTE" is null then
+    select "ESTUDIANTE_SEQ".nextval into :NEW."COD_ESTUDIANTE" from sys.dual;
+  end if;
+end;
+
+
+
+•••••••••• Insertar datos ••••••••••
+
+BEGIN
+
+INSERT INTO EDITORIAL VALUES(NULL, 'DE BOLSILLO');
+INSERT INTO EDITORIAL VALUES(NULL, 'OVEJA NEGRA');
+INSERT INTO EDITORIAL VALUES(NULL, 'NORMA');
+
+END;
+
+
+BEGIN
+
+INSERT INTO IDIOMA VALUES(NULL, 'ESPAÑOL');
+INSERT INTO IDIOMA VALUES(NULL, 'INGLÉS');
+INSERT INTO IDIOMA VALUES(NULL, 'PORTUGUÉS');
+INSERT INTO IDIOMA VALUES(NULL, 'RUSO');
+
+END;
+
+
+BEGIN
+
+INSERT INTO GENERO VALUES(NULL, 'NOVELA');
+INSERT INTO GENERO VALUES(NULL, 'ACADÉMICO');
+INSERT INTO GENERO VALUES(NULL, 'CRÓNICA');
+
+END;
+
+
+
+BEGIN
+
+INSERT INTO AUTOR VALUES(NULL, 'EUCLIDES');
+INSERT INTO AUTOR VALUES(NULL, 'SVETLANA ALIEXVICH');
+INSERT INTO AUTOR VALUES(NULL, 'GABRIEL GARCÍA MÁRQUEZ');
+INSERT INTO AUTOR VALUES(NULL, 'PAOLO GIORDANO');
+
+END;
+
+
+BEGIN
+
+INSERT INTO MODALIDAD VALUES(1, 'PRESTADO');
+INSERT INTO MODALIDAD VALUES(2, 'ENTREGADO');
+
+END;
+
+
+
+BEGIN
+
+INSERT INTO CARRERA VALUES(NULL, 'Matemáticas');
+INSERT INTO CARRERA VALUES(NULL, 'Ingeniería de Sistemas');
+INSERT INTO CARRERA VALUES(NULL, 'Psicología');
+
+END;
+
+
+
+BEGIN
+
+INSERT INTO ESTUDIANTE VALUES(NULL, 'Viviana Márquez', 1, 0);
+INSERT INTO ESTUDIANTE VALUES(NULL, 'Alejandra Torres', 1, 0);
+INSERT INTO ESTUDIANTE VALUES(NULL, 'Jersson Rodríguez', 1, 0);
+INSERT INTO ESTUDIANTE VALUES(NULL, 'David Criollo', 2, 0);
+INSERT INTO ESTUDIANTE VALUES(NULL, 'Sebastián Cuadros', 2, 0);
+INSERT INTO ESTUDIANTE VALUES(NULL, 'Camilo Castellanos', 2, 0);
+INSERT INTO ESTUDIANTE VALUES(NULL, 'Tatiana Calderón', 3, 0);
+INSERT INTO ESTUDIANTE VALUES(NULL, 'Estebán Mendoza', 3, 0);
+
+END;
+
+
+
+BEGIN
+
+INSERT INTO IMAGEN VALUES(NULL, 'http://image.casadellibro.com/a/l/t0/61/9788499926261.jpg');
+INSERT INTO IMAGEN VALUES(NULL, 'http://image.casadellibro.com/a/l/t0/51/9788497592451.jpg');
+INSERT INTO IMAGEN VALUES(NULL, 'http://acervo.revistabula.com/arquivos/posts/images/294/A%20Solidao%20dos%20Numeros%20Primos.jpg');
+INSERT INTO IMAGEN VALUES(NULL, 'http://cdn.rainbowresource.netdna-cdn.com/products/004201.jpg');
+INSERT INTO IMAGEN VALUES(NULL, 'http://cdn.rainbowresource.netdna-cdn.com/products/040868.jpg');
+
+END;
+
+
+
+BEGIN
+
+INSERT INTO LIBRO VALUES(NULL, 'Voces de Chernóbil', 2, 3, 4, 1, 1, 1);
+INSERT INTO LIBRO VALUES(NULL, 'El amor en los tiempos', 3, 1, 1, 2, 2, 2);
+INSERT INTO LIBRO VALUES(NULL, 'A solidão dos números', 4, 1, 3, 3, 3, 3);
+INSERT INTO LIBRO VALUES(NULL, 'Elements of Euclid', 1, 2, 2, 1, 4, 4);
+
+END;
