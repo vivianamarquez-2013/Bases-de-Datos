@@ -360,3 +360,41 @@ INSERT INTO LIBRO VALUES(NULL, 'A solidão dos números', 4, 1, 3, 3, 3, 3);
 INSERT INTO LIBRO VALUES(NULL, 'Elements of Euclid', 1, 2, 2, 1, 4, 4);
 
 END;
+
+
+
+
+CREATE OR REPLACE PROCEDURE ACTUALIZAR_PRESTAMO
+    IS
+    BEGIN
+         AFTER UPDATE ON PRESTAMO 
+         FOR EACH ROW
+         BEGIN
+           IF (:OLD.cod_modalidad<>2) THEN
+             UPDATE LIBRO
+             SET cantidad_disponible
+           END IF;
+         END;
+    END;
+
+
+CREATE OR REPLACE PROCEDURE VXV IS
+    CURSOR CURSOR_VXV IS
+        SELECT 
+            nom_vendedor nombre, sum(val_factura) total_ventas
+        FROM
+            VENDEDOR, CLIENTE, FACTURA
+        WHERE
+            VENDEDOR.cod_vendedor=CLIENTE.cod_vendedor AND
+            CLIENTE.cod_cliente=FACTURA.cod_cliente
+        GROUP BY ROLLUP (nom_vendedor);
+    REGISTRO cursor_vxv%rowtype;
+BEGIN
+     OPEN CURSOR_VXV;
+         LOOP
+             FETCH CURSOR_VXV INTO REGISTRO;
+             EXIT WHEN CURSOR_VXV%NOTFOUND;
+             imprimir(REGISTRO.nombre||' --> '||REGISTRO.total_ventas);
+         END LOOP;
+     CLOSE CURSOR_VXV;
+END;
