@@ -1,0 +1,46 @@
+declare
+begin
+  if :P6_PRODUCT_ID is not null then
+    for c1 in (select nvl(dbms_lob.getlength(product_image),0) l
+               from demo_product_info
+               where product_id = :P6_PRODUCT_ID)
+    loop
+      if c1.l > 0 then
+        return true;
+      end if;
+    end loop;
+  end if;
+  return false;
+end;
+
+return '<img src="'||apex_util.get_blob_file_src('P6_PRODUCT_IMAGE',:P6_PRODUCT_ID)||'" />';
+
+SELECT mimetype from demo_product_info where product_id = :P6_PRODUCT_ID and mimetype like 'image%'
+
+
+
+
+
+CREATE OR REPLACE FUNCTION img(img_dado number) RETURN VARCHAR IS
+    url IMAGEN.url_imagen%type;
+        BEGIN
+            SELECT
+                url_imagen
+            FROM
+                IMAGEN, LIBRO
+            WHERE
+                LIBRO.cod_imagen = IMAGEN.cod_imagen AND
+                IMAGEN.cod_url=img_dado
+            RETURN ('<img src="'||url_imagen||'>,');
+        END;
+        
+        
+        
+        SELECT
+                url_imagen
+            FROM
+                IMAGEN, LIBRO
+            WHERE
+                LIBRO.cod_imagen = IMAGEN.cod_imagen AND
+                IMAGEN.cod_imagen=1;
+       
